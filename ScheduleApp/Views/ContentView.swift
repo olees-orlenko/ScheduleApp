@@ -9,6 +9,10 @@ struct ContentView: View {
             Text("Hello, world!")
         }
         .padding()
+        .onAppear {
+            testFetchCopyright()
+            testFetchStations()
+        }
     }
 }
 
