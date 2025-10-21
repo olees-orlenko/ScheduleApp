@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  ScheduleApp
-//
-//  Created by Олеся Орленко on 17.10.2025.
-//
-
 import SwiftUI
 
 struct ContentView: View {
