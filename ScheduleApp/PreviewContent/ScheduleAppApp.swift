@@ -1,10 +1,3 @@
-//
-//  ScheduleAppApp.swift
-//  ScheduleApp
-//
-//  Created by Олеся Орленко on 17.10.2025.
-//
-
 import SwiftUI
 
 @main
