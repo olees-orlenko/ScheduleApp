@@ -13,6 +13,7 @@ struct ContentView: View {
             testFetchCopyright()
             testFetchStations()
             testFetchSearch()
+            testFetchStationScheduleSearch()
         }
     }
 }
