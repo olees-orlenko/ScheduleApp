@@ -10,11 +10,12 @@ struct ContentView: View {
         }
         .padding()
         .onAppear {
-            testFetchCopyright()
-            testFetchStations()
-            testFetchSearch()
-            testFetchStationScheduleSearch()
-            testFetchThread()
+//            testFetchCopyright()
+//            testFetchStations()
+//            testFetchSearch()
+//            testFetchStationScheduleSearch()
+//            testFetchThread()
+//            testFetchNearestCity()
         }
     }
 }
