@@ -38,7 +38,7 @@ func testFetchSearch() {
             
             let service = SearchService(
                 client: client,
-                apikey: "ec1e3fff-aa6e-48b3-af0d-9428908e4a06"
+                apikey: "YOUR_API_KEY"
             )
             print("Fetching Schedule Between Stations...")
             let scheduleResult = try await service.getScheduleBetweenStations(

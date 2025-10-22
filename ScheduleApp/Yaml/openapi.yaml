@@ -164,6 +164,69 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ScheduleResponse'
+  /v3.0/thread/:
+    get:
+      tags:
+        - getRouteStations
+      summary: Список станций следования
+      operationId: getRouteStations
+      parameters:
+        - name: apikey
+          in: query
+          description: API key
+          required: true
+          schema:
+            type: string
+        - name: uid
+          in: query
+          description: Идентификатор нитки
+          required: true
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: Код станции отправления
+          required: false
+          schema:
+            type: string
+        - name: to
+          in: query
+          description: Код станции прибытия
+          required: false
+          schema:
+            type: string
+        - name: format
+          in: query
+          description: Формат ответа (json по умолчанию)
+          required: false
+          schema:
+            type: string
+        - name: lang
+          in: query
+          description: Язык возвращаемой информации (например, ru_RU)
+          required: false
+          schema:
+            type: string
+        - name: date
+          in: query
+          description: Дата, на которую необходимо получить список станций (формат YYYY-MM-DD)
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: show_systems
+          in: query
+          description: Система кодирования для ответа (например, yandex, esr, all)
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThreadStationsResponse'
   /v3.0/nearest_stations/:
     get:
       tags:
@@ -305,10 +368,12 @@ components:
           type: string
           format: date-time
           description: Время отправления
+          nullable: true
         arrival:
           type: string
           format: date-time
           description: Время прибытия
+          nullable: true
         thread:
           $ref: '#/components/schemas/Thread'
         tickets_info:
@@ -413,10 +478,12 @@ components:
           type: string
           format: date-time
           description: Время прибытия в формате ISO 8601
+          nullable: true
         departure:
           type: string
           format: date-time
           description: Время отправления в формате ISO 8601
+          nullable: true
         thread:
           $ref: '#/components/schemas/Thread'
         days:
@@ -447,6 +514,7 @@ components:
         start_time:
           type: string
           format: time
+          nullable: true
         days:
           type: string
         interval:
@@ -504,10 +572,10 @@ components:
       properties:
         arrival:
           type: string
-          format: date-time
+          nullable: true
         departure:
           type: string
-          format: date-time
+          nullable: true
         stop_time:
           type: integer
           description: Продолжительность остановки в секундах
@@ -553,10 +621,12 @@ components:
               type: string
               format: date-time
               description: Время начала
+              nullable: true
             end_time:
               type: string
               format: date-time
               description: Время окончания
+              nullable: true
     Directions:
       type: object
       properties:
@@ -600,12 +670,12 @@ components:
           description: Периодичность рейсов
         begin_time:
           type: string
-          format: date-time
           description: Время начала рейсов
+          nullable: true
         end_time:
           type: string
-          format: date-time
           description: Время окончания рейсов
+          nullable: true
     ThreadStationsResponse:
       type: object
       properties:
@@ -719,7 +789,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Station'
-
     CopyrightWrapper:
       type: object
       properties:

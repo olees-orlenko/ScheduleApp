@@ -2,13 +2,13 @@ import OpenAPIRuntime
 import Foundation
 import OpenAPIURLSession
 
-typealias ScheduleResponse = Components.Schemas.ScheduleResponse
+typealias Thread = Components.Schemas.ThreadStationsResponse
 
-protocol ScheduleServiceProtocol {
-    func getStationSchedule(station: String, date: String?) async throws -> ScheduleResponse
+protocol ThreadServiceProtocol {
+    func getRouteStations(uid: String, date: String?) async throws -> Thread
 }
 
-final class ScheduleService: ScheduleServiceProtocol {
+final class ThreadService: ThreadServiceProtocol {
     private let client: Client
     private let apikey: String
     
@@ -17,32 +17,31 @@ final class ScheduleService: ScheduleServiceProtocol {
         self.apikey = apikey
     }
     
-    func getStationSchedule(station: String, date: String?) async throws -> ScheduleResponse {
-        let response = try await client.getStationSchedule(query: .init(
+    func getRouteStations(uid: String, date: String?) async throws -> Thread {
+        let response = try await client.getRouteStations(query: .init(
             apikey: apikey,
-            station: station,
+            uid: uid,
             date: date
         ))
         return try response.ok.body.json
     }
 }
 
-func testFetchStationScheduleSearch() {
+func testFetchThread() {
     Task {
         do {
             let client = Client(
                 serverURL: try Servers.Server1.url(),
                 transport: URLSessionTransport()
             )
-            
-            let service = ScheduleService(
+            let service = ThreadService(
                 client: client,
                 apikey: "YOUR_API_KEY"
             )
-            print("Fetching Schedule...")
-            let schedule = try await service.getStationSchedule(
-                station: "s9600213",
-                date: "2025-11-01"
+            print("Fetching thread...")
+            let schedule = try await service.getRouteStations(
+                uid: "SU-1524_251101_c26_12",
+                date: nil
             )
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
@@ -50,12 +49,15 @@ func testFetchStationScheduleSearch() {
             if let jsonData = try? encoder.encode(schedule),
                let dataString = String(data: jsonData, encoding: .utf8) {
                 jsonString = dataString
-                print("Successfully fetched schedule:\n\(jsonString!)")
+                print("Successfully fetched thread:\n\(jsonString!)")
             } else {
-                print("Successfully fetched schedule (debug description): \(schedule)")
+                print("Successfully fetched thread (debug description): \(schedule)")
             }
+             if let arrivalString = schedule.stops?.first?.arrival {
+                 print("Дата прибытия: \(arrivalString)")
+              }
         } catch {
-            print("Error fetching schedule: \(error)")
+            print("Error fetching thread: \(error)")
         }
     }
 }

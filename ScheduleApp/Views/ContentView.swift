@@ -14,6 +14,7 @@ struct ContentView: View {
             testFetchStations()
             testFetchSearch()
             testFetchStationScheduleSearch()
+            testFetchThread()
         }
     }
 }
