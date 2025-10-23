@@ -43,7 +43,7 @@ func testFetchStationsList(){
             print("Fetching allStations...")
             let allStations = try await service.getAllStations(
             )
-            print("Successfully fetched allStations: \(allStations)")
+            print("Successfully fetched allStations")
         } catch {
             print("Error fetching allStations: \(error)")
         }

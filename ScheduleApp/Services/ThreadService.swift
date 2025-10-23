@@ -53,9 +53,9 @@ func testFetchThread() {
             } else {
                 print("Successfully fetched thread (debug description): \(schedule)")
             }
-             if let arrivalString = schedule.stops?.first?.arrival {
-                 print("Дата прибытия: \(arrivalString)")
-              }
+            if let arrivalString = schedule.stops?.first?.arrival {
+                print("Дата прибытия: \(arrivalString)")
+            }
         } catch {
             print("Error fetching thread: \(error)")
         }
