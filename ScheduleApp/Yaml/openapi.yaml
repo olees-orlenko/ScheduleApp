@@ -371,6 +371,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CarrierResponse'
+  /v3.0/stations_list/:
+    get:
+      tags:
+        - getAllStations
+      summary: Список всех доступных станций
+      operationId: getAllStations
+      parameters:
+        - name: apikey
+          in: query
+          description: API key
+          required: true
+          schema:
+            type: string
+        - name: lang
+          in: query
+          description: Язык возвращаемой информации (например, ru_RU)
+          required: false
+          schema:
+            type: string
+        - name: format
+          in: query
+          description: Формат ответа (json по умолчанию)
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Успешный ответ
+          content:
+            text/html; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/AllStationsResponse'
   /v3.0/copyright/:
     get:
       tags:

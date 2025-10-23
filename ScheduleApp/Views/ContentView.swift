@@ -17,6 +17,7 @@ struct ContentView: View {
             testFetchThread()
             testFetchNearestCity()
             testFetchCarrierInfo()
+            testFetchStationsList()
         }
     }
 }
