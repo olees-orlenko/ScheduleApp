@@ -1,13 +1,13 @@
 import OpenAPIRuntime
 import OpenAPIURLSession
 
-typealias NearestStations = Components.Schemas.Stations
+typealias NearestCity = Components.Schemas.NearestCityResponse
 
-protocol NearestStationsServiceProtocol {
-    func getNearestStations(lat: Double, lng: Double, distance: Int) async throws -> NearestStations
+protocol NearestSettlementServiceProtocol {
+    func getNearestCity(lat: Double, lng: Double, distance: Int) async throws -> NearestCity
 }
 
-final class NearestStationsService: NearestStationsServiceProtocol {
+final class NearestSettlementService: NearestSettlementServiceProtocol {
     private let client: Client
     private let apikey: String
     
@@ -16,8 +16,8 @@ final class NearestStationsService: NearestStationsServiceProtocol {
         self.apikey = apikey
     }
     
-    func getNearestStations(lat: Double, lng: Double, distance: Int) async throws -> NearestStations {
-        let response = try await client.getNearestStations(query: .init(
+    func getNearestCity(lat: Double, lng: Double, distance: Int) async throws -> NearestCity {
+        let response = try await client.getNearestCity(query: .init(
             apikey: apikey,
             lat: lat,
             lng: lng,
@@ -27,7 +27,7 @@ final class NearestStationsService: NearestStationsServiceProtocol {
     }
 }
 
-func testFetchStations() {
+func testFetchNearestCity() {
     Task {
         do {
             let client = Client(
@@ -35,12 +35,12 @@ func testFetchStations() {
                 transport: URLSessionTransport()
             )
             
-            let service = NearestStationsService(
+            let service = NearestSettlementService(
                 client: client,
                 apikey: "YOUR_API_KEY"
             )
             print("Fetching stations...")
-            let stations = try await service.getNearestStations(
+            let stations = try await service.getNearestCity(
                 lat: 59.864177,
                 lng: 30.319163,
                 distance: 50

@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  ScheduleApp
-//
-//  Created by Олеся Орленко on 17.10.2025.
-//
-
 import SwiftUI
 
 struct ContentView: View {
@@ -16,6 +9,16 @@ struct ContentView: View {
             Text("Hello, world!")
         }
         .padding()
+        .onAppear {
+            testFetchCopyright()
+            testFetchStations()
+            testFetchSearch()
+            testFetchStationScheduleSearch()
+            testFetchThread()
+            testFetchNearestCity()
+            testFetchCarrierInfo()
+            testFetchStationsList()
+        }
     }
 }
 
