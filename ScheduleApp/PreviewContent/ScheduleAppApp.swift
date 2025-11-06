@@ -4,7 +4,7 @@ import SwiftUI
 struct ScheduleAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashView()
         }
     }
 }
