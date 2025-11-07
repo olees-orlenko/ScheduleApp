@@ -3,6 +3,7 @@ import SwiftUI
 struct StationSelectionView: View {
     let city: City
     @Binding var path: NavigationPath
+    let backButtonWidth: CGFloat
     
     @State private var searchText: String = ""
     
@@ -14,7 +15,7 @@ struct StationSelectionView: View {
         }
     }
     
-    private let backButtonWidth: CGFloat = 40
+//    private let backButtonWidth: CGFloat = 40
 
     var body: some View {
         VStack(spacing: 0) {

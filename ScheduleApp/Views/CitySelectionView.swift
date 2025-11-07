@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CitySelectionView: View {
-
+    
     let cities: [City] = [
         City(name: "Москва", stations: [
             Station(name: "Павелецкий вокзал"),
@@ -18,7 +18,8 @@ struct CitySelectionView: View {
     
     @State private var path = NavigationPath()
     @State private var searchText: String = ""
-
+    @Binding var selectedCity: City?
+    
     private var filteredCities: [City] {
         if searchText.isEmpty {
             return cities
@@ -33,22 +34,18 @@ struct CitySelectionView: View {
         NavigationStack(path: $path) {
             VStack(spacing: 0) {
                 HStack {
-                    if !path.isEmpty {
-                        Button {
-                            path.removeLast()
-                        } label: {
-                            Image("Chevron left")
-                                .resizable()
-                                .renderingMode(.template)
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 17, height: 22)
-                                .foregroundColor(.primary)
-                                .padding(.leading, 8)
-                        }
-                        .frame(width: backButtonWidth, alignment: .leading)
-                    } else {
-                        Spacer().frame(width: backButtonWidth)
+                    Button {
+                        path.removeLast()
+                    } label: {
+                        Image("Chevron left")
+                            .resizable()
+                            .renderingMode(.template)
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 17, height: 22)
+                            .foregroundColor(.primary)
+                            .padding(.leading, 8)
                     }
+                    .frame(width: backButtonWidth, alignment: .leading)
                     Spacer()
                     Text("Выбор города")
                         .font(.system(size: 17, weight: .bold))
@@ -114,17 +111,17 @@ struct CitySelectionView: View {
                     }
                 }
             }
-            .navigationBarHidden(true)
+            .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: City.self) { city in
-                StationSelectionView(city: city, path: $path)
+                StationSelectionView(city: city, path: $path, backButtonWidth: backButtonWidth)
             }
             .navigationDestination(for: CityStationPair.self) { pair in
-                MainView(selectedStation: pair.station, selectedCity: pair.city)
+                MainView(selectedStation: pair.station, selectedCity: pair.city, backButtonWidth: backButtonWidth, path: $path)
             }
         }
     }
 }
 
 //#Preview {
-//    CitySelectionView()
+//    CitySelectionView(selectedCity: .constant(City(name: "Москва", stations: [])))
 //}
