@@ -19,6 +19,7 @@ struct CitySelectionView: View {
     @State private var path = NavigationPath()
     @State private var searchText: String = ""
     @Binding var selectedCity: City?
+    @Environment(\.dismiss) var dismiss
     
     private var filteredCities: [City] {
         if searchText.isEmpty {
@@ -28,31 +29,12 @@ struct CitySelectionView: View {
         }
     }
     
-    private let backButtonWidth: CGFloat = 40
-    
     var body: some View {
         NavigationStack(path: $path) {
             VStack(spacing: 0) {
-                HStack {
-                    Button {
-                        path.removeLast()
-                    } label: {
-                        Image("Chevron left")
-                            .resizable()
-                            .renderingMode(.template)
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 17, height: 22)
-                            .foregroundColor(.primary)
-                            .padding(.leading, 8)
-                    }
-                    .frame(width: backButtonWidth, alignment: .leading)
-                    Spacer()
-                    Text("Выбор города")
-                        .font(.system(size: 17, weight: .bold))
-                        .foregroundColor(.primary)
-                    Spacer()
-                    Spacer().frame(width: backButtonWidth)
-                }
+                NavigationLeftButtonView(title: "Выбор города", showBackButton: true, backAction: {
+                    dismiss()
+                })
                 .padding(.vertical, 11)
                 .background(Color(.systemBackground))
                 .shadow(radius: 0)
@@ -113,10 +95,10 @@ struct CitySelectionView: View {
             }
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: City.self) { city in
-                StationSelectionView(city: city, path: $path, backButtonWidth: backButtonWidth)
+                StationSelectionView(city: city, path: $path)
             }
             .navigationDestination(for: CityStationPair.self) { pair in
-                MainView(selectedStation: pair.station, selectedCity: pair.city, backButtonWidth: backButtonWidth, path: $path)
+                MainView(selectedStation: pair.station, selectedCity: pair.city, path: $path)
             }
         }
     }

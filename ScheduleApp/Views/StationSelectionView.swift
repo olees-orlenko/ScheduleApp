@@ -3,9 +3,9 @@ import SwiftUI
 struct StationSelectionView: View {
     let city: City
     @Binding var path: NavigationPath
-    let backButtonWidth: CGFloat
     
     @State private var searchText: String = ""
+    @Environment(\.dismiss) var dismiss
     
     private var filteredStations: [Station] {
         if searchText.isEmpty {
@@ -14,33 +14,12 @@ struct StationSelectionView: View {
             return city.stations.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
         }
     }
-    
-//    private let backButtonWidth: CGFloat = 40
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Button {
-                    path.removeLast()
-                } label: {
-                    Image("Chevron left")
-                        .resizable()
-                        .renderingMode(.template)
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 17, height: 22)
-                        .foregroundColor(.primary)
-                        .padding(.leading, 8)
-                }
-                .frame(width: backButtonWidth, alignment: .leading)
-                Spacer()
-                
-                Text("Выбор станции")
-                    .font(.system(size: 17, weight: .bold))
-                    .foregroundColor(.primary)
-                Spacer()
-                Spacer()
-                    .frame(width: backButtonWidth)
-            }
+            NavigationLeftButtonView(title: "Выбор станции", showBackButton: true, backAction: {
+                dismiss()
+            })
             .padding(.vertical, 11)
             .background(Color(.systemBackground))
             .shadow(radius: 0)

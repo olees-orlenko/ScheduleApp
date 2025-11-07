@@ -4,7 +4,6 @@ struct SplashView: View {
     @State private var isActive = false
     
     var body: some View {
-        let backButtonWidth: CGFloat = 40
         let testStation = Station(name: "Test Station")
         let mockStations = [
             Station(name: "Станция 1"),
@@ -13,7 +12,7 @@ struct SplashView: View {
         ]
         let mockCity = City(name: "Москва", stations: mockStations)
         if isActive {
-            MainView(selectedStation: testStation, selectedCity: mockCity, backButtonWidth: backButtonWidth, path: .constant(NavigationPath()))
+            MainView(selectedStation: testStation, selectedCity: mockCity, path: .constant(NavigationPath()))
         } else {
             ZStack {
                 Color.black
