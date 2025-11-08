@@ -71,7 +71,7 @@ struct MainView: View {
                                         }
                                         .buttonStyle(PlainButtonStyle())
                                     }
-                                    .frame(width: 259, height: 84)
+                                    .frame(width: 259, height: 96)
                                     .background(
                                         RoundedRectangle(cornerRadius: 20)
                                             .fill(Color.white)
