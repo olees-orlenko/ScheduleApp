@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 
 final class TabBarController: UITabBarController {
     
@@ -10,13 +11,19 @@ final class TabBarController: UITabBarController {
         let tabBarLine = UIView(frame: CGRect(x: 0, y: 0, width: tabBar.frame.width, height: 1))
         tabBarLine.backgroundColor = colors.tabBarLineColor
         tabBar.addSubview(tabBarLine)
-        let scheduleViewController = ScheduleViewController()
-        scheduleViewController.tabBarItem = UITabBarItem(
+        let testStation = Station(name: "Test Station")
+        let mockStations = [
+            Station(name: "Станция 1"),
+            Station(name: "Станция 2"),
+            Station(name: "Станция 3")
+        ]
+        let mockCity = City(name: "Москва", stations: mockStations)
+        let mainSwiftUIView = MainView(selectedStation: testStation, selectedCity: mockCity, path: .constant(NavigationPath()))
+        let mainHostingController = UIHostingController(rootView: mainSwiftUIView)
+        mainHostingController.tabBarItem = UITabBarItem(
             title: nil,
             image: UIImage(named: "Schedule"),
-            selectedImage: nil
-        )
-        let scheduleNavigationController = UINavigationController(rootViewController: scheduleViewController)
+            selectedImage: nil)
         let settingsViewController = SettingsViewController()
         settingsViewController.tabBarItem = UITabBarItem(
             title: nil,
@@ -24,7 +31,7 @@ final class TabBarController: UITabBarController {
             selectedImage: nil
         )
         let settingsNavigationController = UINavigationController(rootViewController: settingsViewController)
-        viewControllers = [scheduleNavigationController, settingsNavigationController]
+        viewControllers = [mainHostingController, settingsNavigationController]
         tabBar.tintColor = colors.navigationBarTintColor
         tabBar.unselectedItemTintColor = UIColor(resource: .gray)
         if let items = tabBar.items {
