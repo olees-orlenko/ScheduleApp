@@ -26,6 +26,7 @@ struct ScheduleCardView: View {
             HStack(alignment: .center) {
                 Text(schedule.departureTime)
                     .font(.system(size: 17, weight: .regular))
+                    .kerning(-0.41)
                     .foregroundColor(.primary)
                     .frame(width: 46, alignment: .leading)
                 Spacer().frame(width: 4)
@@ -48,7 +49,7 @@ struct ScheduleCardView: View {
                 // MARK: Время прибытия
                 Text(schedule.arrivalTime)
                     .font(.system(size: 17, weight: .regular))
-                    .kerning(0.4)
+                    .kerning(-0.41)
                     .foregroundColor(.primary)
                     .frame(width: 46, alignment: .trailing)
             }

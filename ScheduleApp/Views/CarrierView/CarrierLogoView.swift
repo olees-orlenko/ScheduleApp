@@ -16,7 +16,7 @@ struct CarrierLogoView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(carrierName)
                     .font(.system(size: 17, weight: .regular))
-                    .kerning(0.4)
+                    .kerning(-0.41)
                     .foregroundColor(Color("black"))
 
                 if let transfer = transfer {
