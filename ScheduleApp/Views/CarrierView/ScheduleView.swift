@@ -3,6 +3,7 @@ import SwiftUI
 struct ScheduleView: View {
     @Environment(\.dismiss) var dismiss
     @State private var path = NavigationPath()
+    let scheduleList = Сarrier.schedule
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -21,16 +22,24 @@ struct ScheduleView: View {
                             .fixedSize(horizontal: false, vertical: true)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
-                        
-                        // MARK: - List of Variants
-                        ScrollView {
-                            VStack(spacing: 0) {
-                                ForEach(Сarrier.schedule) { schedule in
-                                    ScheduleCardView(schedule: schedule)
+                        if scheduleList.isEmpty {
+                            Text("Вариантов нет")
+                                .font(.system(size: 24, weight: .bold))
+                                .foregroundColor(.primary)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(.top, 221)
+                            Spacer()
+                        } else {
+                            // MARK: - List of Variants
+                            ScrollView {
+                                VStack(spacing: 0) {
+                                    ForEach(Сarrier.schedule) { schedule in
+                                        ScheduleCardView(schedule: schedule)
+                                    }
                                 }
                             }
+                            .background(Color.clear)
                         }
-                        .background(Color.clear)
                     }
                     .background(Color(UIColor.clear).ignoresSafeArea())
                     .navigationBarHidden(true)
