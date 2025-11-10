@@ -14,7 +14,7 @@ struct StationSelectionView: View {
             return city.stations.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
         }
     }
-
+    
     var body: some View {
         VStack(spacing: 0) {
             NavigationLeftButtonView(title: "Выбор станции", showBackButton: true, backAction: {
@@ -32,18 +32,18 @@ struct StationSelectionView: View {
                     .foregroundColor(.primary)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundColor(Color(.lightGray))
-                    .padding(.trailing, -7)
-                    .onTapGesture {
-                        if !searchText.isEmpty {
+                if !searchText.isEmpty {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(Color(.gray))
+                        .padding(.trailing, -7)
+                        .onTapGesture {
                             searchText = ""
                         }
-                    }
+                }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .background(Color(.systemGray6))
+            .background(Color("SearchFieldBackground"))
             .cornerRadius(10)
             .padding(.horizontal, 16)
             .padding(.bottom, 8)

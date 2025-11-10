@@ -116,14 +116,14 @@ struct MainView: View {
     }
 }
 
-#Preview {
-    let backButtonWidth: CGFloat = 40
-    let testStation = Station(name: "Test Station")
-    let mockStations = [
-        Station(name: "Станция 1"),
-        Station(name: "Станция 2"),
-        Station(name: "Станция 3")
-    ]
-    let mockCity = City(name: "Москва", stations: mockStations)
-    MainView(selectedStation: testStation, selectedCity: mockCity, path: .constant(NavigationPath()))
-}
+//#Preview {
+//    let backButtonWidth: CGFloat = 40
+//    let testStation = Station(name: "Test Station")
+//    let mockStations = [
+//        Station(name: "Станция 1"),
+//        Station(name: "Станция 2"),
+//        Station(name: "Станция 3")
+//    ]
+//    let mockCity = City(name: "Москва", stations: mockStations)
+//    MainView(selectedStation: testStation, selectedCity: mockCity, path: .constant(NavigationPath()))
+//}
