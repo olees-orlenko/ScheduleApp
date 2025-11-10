@@ -17,7 +17,7 @@ struct ScheduleCardView: View {
                 Text(schedule.date)
                     .font(.system(size: 12, weight: .regular))
                     .kerning(0.4)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.black)
                     .padding(.top, -15)
                     .padding(.trailing, -7)
             }
@@ -27,7 +27,7 @@ struct ScheduleCardView: View {
                 Text(schedule.departureTime)
                     .font(.system(size: 17, weight: .regular))
                     .kerning(-0.41)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.black)
                     .frame(width: 46, alignment: .leading)
                 Spacer().frame(width: 4)
 
@@ -38,7 +38,7 @@ struct ScheduleCardView: View {
                         .foregroundColor(Color("gray"))
                     Text(schedule.duration)
                         .font(.system(size: 12, weight: .regular))
-                        .foregroundColor(.primary)
+                        .foregroundColor(.black)
                         .fixedSize()
                     Rectangle()
                         .frame(height: 1)
@@ -50,7 +50,7 @@ struct ScheduleCardView: View {
                 Text(schedule.arrivalTime)
                     .font(.system(size: 17, weight: .regular))
                     .kerning(-0.41)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.black)
                     .frame(width: 46, alignment: .trailing)
             }
         }
