@@ -14,7 +14,7 @@ struct FilterCheckboxView: View {
                 Spacer()
                 Image(systemName: isSelected ? "checkmark.square.fill" : "square")
                     .font(.title2)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
             }
             .contentShape(Rectangle())
             .padding(.vertical, 8)

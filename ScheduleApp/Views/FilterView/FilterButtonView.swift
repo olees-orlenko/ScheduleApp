@@ -14,7 +14,7 @@ struct FilterButtonView: View {
                 Spacer()
                 Image(systemName: isSelected ? "record.circle" : "circle")
                     .font(.title2)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
             }
             .contentShape(Rectangle())
             .padding(.vertical, 8)
