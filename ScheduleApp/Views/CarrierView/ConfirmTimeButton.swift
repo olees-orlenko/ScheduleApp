@@ -1,9 +1,24 @@
 import SwiftUI
 
-struct ConfirmTimeButton: View {
-    let action: () -> Void
+// MARK: - ConfirmTimeButton
 
+struct ConfirmTimeButton: View {
+    
+    // MARK: - Properties
+    
+    let action: () -> Void
+    
+    // MARK: - Body
+    
     var body: some View {
+        button
+            .padding(.horizontal)
+            .padding(.bottom, 24)
+    }
+    
+    // MARK: - Views
+    
+    private var button: some View {
         Button(action: action) {
             Text("Уточнить время")
                 .font(.system(size: 17, weight: .bold))
@@ -13,7 +28,15 @@ struct ConfirmTimeButton: View {
                 .background(Color("blue"))
                 .cornerRadius(16)
         }
-        .padding(.horizontal)
-        .padding(.bottom, 24)
     }
+}
+
+// MARK: - ConfirmTimeButton_Preview
+
+#Preview {
+    ConfirmTimeButton {
+        print("Кнопка нажата")
+    }
+    .padding()
+    .background(Color.gray.opacity(0.2))
 }
