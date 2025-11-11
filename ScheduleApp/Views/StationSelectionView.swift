@@ -2,7 +2,9 @@ import SwiftUI
 
 struct StationSelectionView: View {
     let city: City
+    let onDismiss: () -> Void
     @Binding var path: NavigationPath
+    @Binding var selectedCityBinding: City?
     
     @State private var searchText: String = ""
     @Environment(\.dismiss) var dismiss
@@ -61,7 +63,10 @@ struct StationSelectionView: View {
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        path.append(CityStationPair(city: city, station: station))
+                        var resultCity = city
+                        resultCity.selectedStation = station
+                        selectedCityBinding = resultCity
+                        onDismiss()
                     }
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color(.systemBackground))

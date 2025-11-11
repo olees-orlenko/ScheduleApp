@@ -12,6 +12,10 @@ struct MainView: View {
     @State private var arrivalCity: City? = nil
     @State private var isFindButtonTapped = false
     
+    var isFindButtonEnabled: Bool {
+        return departureCity != nil && arrivalCity != nil
+    }
+    
     let stories: [Story] = [
         Story(imageName: "Stories", title: "Text Text Text Text Text T...", isSeen: false),
         Story(imageName: "Stories 1", title: "Text Text Text Text Text T...", isSeen: false),
@@ -49,9 +53,9 @@ struct MainView: View {
                                     VStack() {
                                         Button(action: { citySelectionForDeparture = true }) {
                                             VStack(alignment: .leading) {
-                                                Text(departureCity?.name ?? "Откуда")
+                                                Text(displayText(for: departureCity, defaultText: "Откуда"))
                                                     .font(.system(size: 17, weight: .regular))
-                                                    .foregroundColor(departureCity == nil ? Color("gray") : .primary)
+                                                    .foregroundColor(departureCity == nil ? Color("gray") : .black)
                                                     .kerning(-0.41)
                                             }
                                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -61,9 +65,9 @@ struct MainView: View {
                                         .buttonStyle(PlainButtonStyle())
                                         Button(action: { citySelectionForArrival = true }) {
                                             VStack(alignment: .leading) {
-                                                Text(arrivalCity?.name ?? "Куда")
+                                                Text(displayText(for: arrivalCity, defaultText: "Куда"))
                                                     .font(.system(size: 17, weight: .regular))
-                                                    .foregroundColor(arrivalCity == nil ? Color("gray") : .primary)
+                                                    .foregroundColor(arrivalCity == nil ? Color("gray") : .black)
                                                     .kerning(-0.41)
                                             }
                                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -100,25 +104,26 @@ struct MainView: View {
                         .padding(.horizontal, 16)
                     }
                     // MARK: - Кнопка "Найти"
-                    NavigationLink(
-                        destination: ScheduleView()
-                        .toolbar(.hidden, for: .tabBar),
-                                   isActive: $isFindButtonTapped) {
-                        EmptyView()
+                    if isFindButtonEnabled {
+                        NavigationLink(
+                            destination: ScheduleView()
+                                .toolbar(.hidden, for: .tabBar),
+                            isActive: $isFindButtonTapped) {
+                                EmptyView()
+                            }
+                            .hidden()
+                        Button(action: {
+                            isFindButtonTapped = true
+                        }) {
+                            Text("Найти")
+                                .font(.system(size: 17, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(width: 150, height: 60)
+                                .background(Color("blue"))
+                                .cornerRadius(16)
+                        }
+                        .padding(.top, 16)
                     }
-                                   .hidden()
-                    Button(action: {
-                        print("Найти нажато!")
-                        isFindButtonTapped = true
-                    }) {
-                        Text("Найти")
-                            .font(.system(size: 17, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 150, height: 60)
-                            .background(Color("blue"))
-                            .cornerRadius(16)
-                    }
-                    .padding(.top, 16)
                 }
             }
             .navigationBarHidden(true)
@@ -133,6 +138,17 @@ struct MainView: View {
                 MainView(selectedStation: pair.station, selectedCity: pair.city, path: .constant(NavigationPath()))
             }
         }
+    }
+    
+    func displayText(for city: City?, defaultText: String) -> String {
+        guard let city = city else {
+            return defaultText
+        }
+        var text = city.name
+        if let stationName = city.selectedStation?.name {
+            text += " (\(stationName))"
+        }
+        return text
     }
 }
 

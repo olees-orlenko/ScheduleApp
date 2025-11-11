@@ -95,10 +95,7 @@ struct CitySelectionView: View {
             }
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: City.self) { city in
-                StationSelectionView(city: city, path: $path)
-            }
-            .navigationDestination(for: CityStationPair.self) { pair in
-                MainView(selectedStation: pair.station, selectedCity: pair.city, path: $path)
+                StationSelectionView(city: city, onDismiss: {dismiss()}, path: $path, selectedCityBinding: $selectedCity)
             }
         }
     }

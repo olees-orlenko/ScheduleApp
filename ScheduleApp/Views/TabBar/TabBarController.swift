@@ -20,10 +20,11 @@ final class TabBarController: UITabBarController {
         let mockCity = City(name: "Москва", stations: mockStations)
         let mainSwiftUIView = MainView(selectedStation: testStation, selectedCity: mockCity, path: .constant(NavigationPath()))
         let mainHostingController = UIHostingController(rootView: mainSwiftUIView)
-        mainHostingController.tabBarItem = UITabBarItem(
+        let mainNavController = UINavigationController(rootViewController: mainHostingController)
+        mainNavController.tabBarItem = UITabBarItem(
             title: nil,
             image: UIImage(named: "Schedule"),
-            selectedImage: nil)
+            tag: 0)
         let settingsViewController = SettingsViewController()
         settingsViewController.tabBarItem = UITabBarItem(
             title: nil,
@@ -31,7 +32,7 @@ final class TabBarController: UITabBarController {
             selectedImage: nil
         )
         let settingsNavigationController = UINavigationController(rootViewController: settingsViewController)
-        viewControllers = [mainHostingController, settingsNavigationController]
+        viewControllers = [mainNavController, settingsNavigationController]
         tabBar.tintColor = colors.navigationBarTintColor
         tabBar.unselectedItemTintColor = UIColor(resource: .gray)
         if let items = tabBar.items {
