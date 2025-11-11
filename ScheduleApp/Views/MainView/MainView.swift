@@ -10,6 +10,7 @@ struct MainView: View {
     @State private var citySelectionForArrival = false
     @State private var departureCity: City? = nil
     @State private var arrivalCity: City? = nil
+    @State private var isFindButtonTapped = false
     
     let stories: [Story] = [
         Story(imageName: "Stories", title: "Text Text Text Text Text T...", isSeen: false),
@@ -97,24 +98,44 @@ struct MainView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.horizontal, 16)
-                        .padding(.top, 20)
                     }
+                    // MARK: - Кнопка "Найти"
+                    NavigationLink(
+                        destination: ScheduleView()
+                        .toolbar(.hidden, for: .tabBar),
+                                   isActive: $isFindButtonTapped) {
+                        EmptyView()
+                    }
+                                   .hidden()
+                    Button(action: {
+                        print("Найти нажато!")
+                        isFindButtonTapped = true
+                    }) {
+                        Text("Найти")
+                            .font(.system(size: 17, weight: .bold))
+                            .foregroundColor(.white)
+                            .frame(width: 150, height: 60)
+                            .background(Color("blue"))
+                            .cornerRadius(16)
+                    }
+                    .padding(.top, 16)
                 }
-                .navigationBarHidden(true)
-                .background(Color(.systemBackground).ignoresSafeArea())
-                .sheet(isPresented: $citySelectionForDeparture) {
-                    CitySelectionView(selectedCity: $departureCity)
-                }
-                .sheet(isPresented: $citySelectionForArrival) {
-                    CitySelectionView(selectedCity: $arrivalCity)
-                }
-                .navigationDestination(for: CityStationPair.self) { pair in
-                    MainView(selectedStation: pair.station, selectedCity: pair.city, path: .constant(NavigationPath()))
-                }
+            }
+            .navigationBarHidden(true)
+            .background(Color(.systemBackground).ignoresSafeArea())
+            .sheet(isPresented: $citySelectionForDeparture) {
+                CitySelectionView(selectedCity: $departureCity)
+            }
+            .sheet(isPresented: $citySelectionForArrival) {
+                CitySelectionView(selectedCity: $arrivalCity)
+            }
+            .navigationDestination(for: CityStationPair.self) { pair in
+                MainView(selectedStation: pair.station, selectedCity: pair.city, path: .constant(NavigationPath()))
             }
         }
     }
 }
+
 
 //#Preview {
 //    let backButtonWidth: CGFloat = 40

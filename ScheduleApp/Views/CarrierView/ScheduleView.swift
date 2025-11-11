@@ -58,6 +58,8 @@ struct ScheduleView: View {
                 }
             }
         }
+        .toolbar(.hidden, for: .navigationBar)
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 
