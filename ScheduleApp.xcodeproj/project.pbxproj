@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FC02FF632EC3DB0400C94F4F /* UIColor+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC02FF602EC3DB0200C94F4F /* UIColor+Theme.swift */; };
 		FC7AACE42EA3253600571D64 /* OpenAPIRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = FC7AACE32EA3253600571D64 /* OpenAPIRuntime */; };
 		FC7AACE72EA3255100571D64 /* OpenAPIURLSession in Frameworks */ = {isa = PBXBuildFile; productRef = FC7AACE62EA3255100571D64 /* OpenAPIURLSession */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FC02FF602EC3DB0200C94F4F /* UIColor+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Theme.swift"; sourceTree = "<group>"; };
 		FC7AAC5D2EA31E2800571D64 /* ScheduleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScheduleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -36,9 +38,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FC02FF662EC3DB9300C94F4F /* Foundation */ = {
+			isa = PBXGroup;
+			children = (
+				FC02FF692EC3DBAF00C94F4F /* Extensions */,
+			);
+			path = Foundation;
+			sourceTree = "<group>";
+		};
+		FC02FF692EC3DBAF00C94F4F /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				FC02FF602EC3DB0200C94F4F /* UIColor+Theme.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		FC7AAC542EA31E2800571D64 = {
 			isa = PBXGroup;
 			children = (
+				FC02FF662EC3DB9300C94F4F /* Foundation */,
 				FC7AAC5F2EA31E2800571D64 /* ScheduleApp */,
 				FC7AAC5E2EA31E2800571D64 /* Products */,
 			);
@@ -134,6 +153,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC02FF632EC3DB0400C94F4F /* UIColor+Theme.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

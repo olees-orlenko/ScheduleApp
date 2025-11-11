@@ -20,7 +20,6 @@ final class SettingsViewController: UIViewController {
     
     var switchButton: [Int : Bool] = [:]
     private var isDarkModeEnabled: Bool = false
-    private let colors = Colors()
     
     // MARK: - UI Elements
     
@@ -42,7 +41,7 @@ final class SettingsViewController: UIViewController {
     // MARK: - Setup UI Elements
     
     private func setupView() {
-        view.backgroundColor = colors.viewBackgroundColor
+        view.backgroundColor = .viewBackground
     }
     
     private func setupTableView() {
@@ -63,7 +62,7 @@ final class SettingsViewController: UIViewController {
         let letterSpacing: CGFloat = 0.4
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: fontSize, weight: fontWeight),
-            .foregroundColor: colors.themeTintColor(),
+            .foregroundColor: UIColor.themeTint,
             .kern: letterSpacing
         ]
         let attributedString = NSAttributedString(string: labelText, attributes: attributes)
@@ -80,7 +79,7 @@ final class SettingsViewController: UIViewController {
         let letterSpacing: CGFloat = 0.4
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: fontSize, weight: fontWeight),
-            .foregroundColor: colors.themeTintColor(),
+            .foregroundColor: UIColor.themeTint,
             .kern: letterSpacing
         ]
         let attributedString = NSAttributedString(string: labelText, attributes: attributes)
@@ -139,7 +138,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             cell.textLabel?.text = "Пользовательское соглашение"
             cell.accessoryType = .none
             let chevronImageView = UIImageView(image: UIImage(named: "Chevron"))
-            chevronImageView.tintColor = colors.imageTintColor
+            chevronImageView.tintColor = .imageTint
             cell.accessoryView = chevronImageView
             cell.selectionStyle = .none
             return cell

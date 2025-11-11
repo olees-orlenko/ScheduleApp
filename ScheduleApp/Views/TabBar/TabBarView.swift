@@ -5,7 +5,6 @@ struct TabBarView: View {
     let testStation: Station
     let mockStations: [Station]
     let mockCity: City
-    private let colors = Colors()
     
     init() {
         self.testStation = Station(name: "Test Station")
@@ -22,7 +21,7 @@ struct TabBarView: View {
         appearance.configureWithOpaqueBackground()
         let itemAppearance = UITabBarItemAppearance()
         itemAppearance.normal.iconColor = UIColor(Color("gray"))
-        itemAppearance.selected.iconColor = colors.navigationBarTintColor
+        itemAppearance.selected.iconColor = .navigationBarTint
         appearance.stackedLayoutAppearance = itemAppearance
         appearance.inlineLayoutAppearance = itemAppearance
         UITabBar.appearance().standardAppearance = appearance

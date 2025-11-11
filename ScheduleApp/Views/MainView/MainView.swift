@@ -133,10 +133,10 @@ struct MainView: View {
             }
             .navigationBarHidden(true)
             .background(Color(.systemBackground).ignoresSafeArea())
-            .sheet(isPresented: $citySelectionForDeparture) {
+            .fullScreenCover(isPresented: $citySelectionForDeparture) {
                 CitySelectionView(selectedCity: $departureCity)
             }
-            .sheet(isPresented: $citySelectionForArrival) {
+            .fullScreenCover(isPresented: $citySelectionForArrival) {
                 CitySelectionView(selectedCity: $arrivalCity)
             }
             .navigationDestination(for: CityStationPair.self) { pair in
