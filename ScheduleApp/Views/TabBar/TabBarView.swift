@@ -1,32 +1,23 @@
 import SwiftUI
 
+// MARK: - TabBarView
+
 struct TabBarView: View {
     
-    let testStation: Station
-    let mockStations: [Station]
-    let mockCity: City
+    // MARK: - Properties
+    
+    private let testStation: Station
+    private let mockStations: [Station]
+    private let mockCity: City
+    
+    // MARK: - Init
     
     init() {
-        self.testStation = Station(name: "Test Station")
-        self.mockStations = [
-            Station(name: "Станция 1"),
-            Station(name: "Станция 2"),
-            Station(name: "Станция 3")
-        ]
-        self.mockCity = City(name: "Москва", stations: self.mockStations)
-        
-        let appearance = UITabBarAppearance()
-        appearance.shadowColor = UIColor.separator
-        appearance.backgroundColor = .systemBackground
-        appearance.configureWithOpaqueBackground()
-        let itemAppearance = UITabBarItemAppearance()
-        itemAppearance.normal.iconColor = UIColor(Color("gray"))
-        itemAppearance.selected.iconColor = .navigationBarTint
-        appearance.stackedLayoutAppearance = itemAppearance
-        appearance.inlineLayoutAppearance = itemAppearance
-        UITabBar.appearance().standardAppearance = appearance
-        UITabBar.appearance().scrollEdgeAppearance = appearance
+        (testStation, mockStations, mockCity) = TabBarView.makeMockData()
+        TabBarView.configureAppearance()
     }
+    
+    // MARK: - Body
     
     var body: some View {
         TabView {
@@ -47,4 +38,42 @@ struct TabBarView: View {
             .tag(1)
         }
     }
+    
+    // MARK: - Static Helpers
+    
+    private static func makeMockData() -> (Station, [Station], City) {
+        let testStation = Station(name: "Test Station")
+        let mockStations = [
+            Station(name: "Станция 1"),
+            Station(name: "Станция 2"),
+            Station(name: "Станция 3")
+        ]
+        let mockCity = City(name: "Москва", stations: mockStations)
+        return (testStation, mockStations, mockCity)
+    }
+    
+    private static func configureAppearance() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .systemBackground
+        appearance.shadowColor = UIColor.separator
+        
+        let itemAppearance = UITabBarItemAppearance()
+        itemAppearance.normal.iconColor = UIColor(Color("gray"))
+        itemAppearance.selected.iconColor = .navigationBarTint
+        
+        appearance.stackedLayoutAppearance = itemAppearance
+        appearance.inlineLayoutAppearance = itemAppearance
+        
+        let tabBar = UITabBar.appearance()
+        tabBar.standardAppearance = appearance
+        tabBar.scrollEdgeAppearance = appearance
+    }
+}
+
+// MARK: - TabBarView_Preview
+
+#Preview {
+    TabBarView()
+        .preferredColorScheme(.light)
 }
