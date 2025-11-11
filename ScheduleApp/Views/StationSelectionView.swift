@@ -78,13 +78,3 @@ struct StationSelectionView: View {
         .navigationBarHidden(true)
     }
 }
-
-//#Preview {
-//    let mockStations = [
-//        Station(name: "Станция 1"),
-//        Station(name: "Станция 2"),
-//        Station(name: "Станция 3")
-//    ]
-//    let mockCity = City(name: "Москва", stations: mockStations)
-//    StationSelectionView(city: mockCity, path: .constant(NavigationPath()))
-//}

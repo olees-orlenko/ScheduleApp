@@ -17,6 +17,6 @@ struct ServerErrorView: View {
     }
 }
 
-//#Preview {
-//    ServerErrorView()
-//}
+#Preview {
+    ServerErrorView()
+}

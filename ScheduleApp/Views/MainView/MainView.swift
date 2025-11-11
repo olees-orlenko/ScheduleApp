@@ -1,9 +1,8 @@
 import SwiftUI
 
 struct MainView: View {
-    let selectedStation: Station
-    let selectedCity: City
-    @Binding var path: NavigationPath
+    let selectedStation: Station?
+    let selectedCity: City?
     
     @Environment(\.dismiss) var dismiss
     @State private var citySelectionForDeparture = false
@@ -22,10 +21,16 @@ struct MainView: View {
         Story(imageName: "Stories 2", title: "Text Text Text Text Text T...", isSeen: true),
         Story(imageName: "Stories 3", title: "Text Text Text Text Text T...", isSeen: true)
     ]
+    init(selectedStation: Station?, selectedCity: City?) {
+        self.selectedStation = selectedStation
+        self.selectedCity = selectedCity
+        _departureCity = State(initialValue: selectedCity)
+        _arrivalCity = State(initialValue: nil)
+    }
     
     var body: some View {
         ZStack {
-            NavigationView {
+            NavigationStack {
                 ScrollView(.vertical, showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 20) {
                         
@@ -135,7 +140,7 @@ struct MainView: View {
                 CitySelectionView(selectedCity: $arrivalCity)
             }
             .navigationDestination(for: CityStationPair.self) { pair in
-                MainView(selectedStation: pair.station, selectedCity: pair.city, path: .constant(NavigationPath()))
+                MainView(selectedStation: pair.station, selectedCity: pair.city)
             }
         }
     }
@@ -153,14 +158,14 @@ struct MainView: View {
 }
 
 
-//#Preview {
-//    let backButtonWidth: CGFloat = 40
-//    let testStation = Station(name: "Test Station")
-//    let mockStations = [
-//        Station(name: "Станция 1"),
-//        Station(name: "Станция 2"),
-//        Station(name: "Станция 3")
-//    ]
-//    let mockCity = City(name: "Москва", stations: mockStations)
-//    MainView(selectedStation: testStation, selectedCity: mockCity, path: .constant(NavigationPath()))
-//}
+#Preview {
+    let backButtonWidth: CGFloat = 40
+    let testStation = Station(name: "Test Station")
+    let mockStations = [
+        Station(name: "Станция 1"),
+        Station(name: "Станция 2"),
+        Station(name: "Станция 3")
+    ]
+    let mockCity = City(name: "Москва", stations: mockStations)
+    MainView(selectedStation: testStation, selectedCity: mockCity)
+}

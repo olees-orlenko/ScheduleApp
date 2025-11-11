@@ -5,9 +5,9 @@ struct NavigationLeftButtonView: View {
     var showBackButton: Bool
     var backButtonWidth: CGFloat = 42
     var backAction: (() -> Void)?
-
+    
     @Environment(\.dismiss) var dismiss
-
+    
     var body: some View {
         HStack {
             if showBackButton {

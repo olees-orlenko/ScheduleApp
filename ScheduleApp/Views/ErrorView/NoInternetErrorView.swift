@@ -17,6 +17,6 @@ struct NoInternetErrorView: View {
     }
 }
 
-//#Preview {
-//    NoInternetErrorView()
-//}
+#Preview {
+    NoInternetErrorView()
+}

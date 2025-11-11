@@ -101,6 +101,6 @@ struct CitySelectionView: View {
     }
 }
 
-//#Preview {
-//    CitySelectionView(selectedCity: .constant(City(name: "Москва", stations: [])))
-//}
+#Preview {
+    CitySelectionView(selectedCity: .constant(City(name: "Москва", stations: [])))
+}

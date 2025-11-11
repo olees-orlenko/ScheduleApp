@@ -1,8 +1,21 @@
 
 import UIKit
+import SwiftUI
+
+struct SettingsViewRepresentable: UIViewControllerRepresentable {
+    
+    typealias UIViewControllerType = SettingsViewController
+    
+    func makeUIViewController(context: Context) -> SettingsViewController {
+        return SettingsViewController()
+    }
+    
+    func updateUIViewController(_ uiViewController: SettingsViewController, context: Context) {
+    }
+}
 
 final class SettingsViewController: UIViewController {
-
+    
     // MARK: - Properties
     
     var switchButton: [Int : Bool] = [:]
@@ -14,9 +27,9 @@ final class SettingsViewController: UIViewController {
     private let tableView = UITableView()
     private let apiLabel = UILabel()
     private let versionLabel = UILabel()
-
+    
     // MARK: - Lifecycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -25,13 +38,13 @@ final class SettingsViewController: UIViewController {
         setupVersionLabelView()
         setupConstraints()
     }
-
+    
     // MARK: - Setup UI Elements
     
     private func setupView() {
         view.backgroundColor = colors.viewBackgroundColor
     }
-
+    
     private func setupTableView() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .none
@@ -42,7 +55,7 @@ final class SettingsViewController: UIViewController {
         tableView.dataSource = self
         view.addSubview(tableView)
     }
-
+    
     private func setupApiLabelView() {
         let labelText = "Приложение использует API «Яндекс.Расписания»"
         let fontSize: CGFloat = 12
@@ -76,9 +89,9 @@ final class SettingsViewController: UIViewController {
         versionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(versionLabel)
     }
-
+    
     // MARK: - Constraints
-
+    
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
@@ -102,11 +115,11 @@ final class SettingsViewController: UIViewController {
 // MARK: - TableView Delegate & DataSource
 
 extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: ThemeTableViewCell.reuseIdentifier, for: indexPath) as? ThemeTableViewCell else {
@@ -132,11 +145,11 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
         }
     }
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 1 {
             print("Переход на экран пользовательского соглашения")
@@ -183,13 +196,13 @@ final class ThemeTableViewCell: UITableViewCell {
         themeSwitch.addTarget(self, action: #selector(switchValueChanged), for: .valueChanged)
         self.switchHandler = handler
     }
-
+    
     // MARK: - Action Handling
     
     @objc private func switchValueChanged() {
         switchHandler?(themeSwitch.isOn)
     }
-
+    
     // MARK: - Lifecycle
     
     override func prepareForReuse() {

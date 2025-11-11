@@ -44,6 +44,7 @@ struct ScheduleView: View {
                     }
                     .background(Color(UIColor.clear).ignoresSafeArea())
                     .navigationBarHidden(true)
+                    .toolbar(.hidden, for: .tabBar)
                     NavigationLink {
                         FilterView()
                     } label: {
@@ -58,12 +59,13 @@ struct ScheduleView: View {
                     }
                 }
             }
+            .toolbar(.hidden, for: .tabBar)
         }
         .toolbar(.hidden, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
     }
 }
 
-//#Preview{
-//    ScheduleView()
-//}
+#Preview{
+    ScheduleView()
+}

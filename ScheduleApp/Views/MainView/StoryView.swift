@@ -2,7 +2,7 @@ import SwiftUI
 
 struct StoryView: View {
     let story: Story
-
+    
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             Image(story.imageName)
@@ -17,7 +17,7 @@ struct StoryView: View {
                         .stroke(Color("blue"), lineWidth: 4)
                     : nil
                 )
-
+            
             Text(story.title)
                 .font(.system(size: 12, weight: .regular))
                 .kerning(0.4)
@@ -31,7 +31,7 @@ struct StoryView: View {
     }
 }
 
-//#Preview {
-//    let testStory = Story(imageName: "Stories", title: "Text Text Text Text Text Text Text Text Text", isSeen: false)
-//    StoryView(story: testStory)
-//}
+#Preview {
+    let testStory = Story(imageName: "Stories", title: "Text Text Text Text Text Text Text Text Text", isSeen: false)
+    StoryView(story: testStory)
+}

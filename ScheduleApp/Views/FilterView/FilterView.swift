@@ -4,9 +4,9 @@ struct FilterView: View {
     @State private var selectedDepartureTime: Set<Time> = []
     @State private var selectedTransfer: Transfer? = nil
     @State private var showApplyButton: Bool = false
-
+    
     @Environment(\.dismiss) var dismiss
-
+    
     var body: some View {
         VStack(spacing: 0) {
             NavigationLeftButtonView(title: "", showBackButton: true, backAction: {
@@ -19,7 +19,7 @@ struct FilterView: View {
                         .font(.system(size: 24, weight: .bold))
                         .padding(.horizontal, 16)
                         .padding(.top, 16)
-
+                    
                     ForEach(Time.allCases) { time in
                         FilterCheckboxView(
                             title: time.rawValue,
@@ -38,7 +38,7 @@ struct FilterView: View {
                         .font(.system(size: 24, weight: .bold))
                         .padding(.horizontal, 16)
                         .padding(.top, 16)
-
+                    
                     ForEach(Transfer.allCases) { option in
                         FilterButtonView(
                             title: option.rawValue,
@@ -52,7 +52,7 @@ struct FilterView: View {
                 }
                 .padding(.bottom, 95)
             }
-
+            
             // MARK: - Apply Button
             if showApplyButton {
                 Button(action: applyFilters) {
@@ -70,16 +70,17 @@ struct FilterView: View {
         }
         .background(Color(.systemBackground).ignoresSafeArea())
         .toolbar(.hidden, for: .navigationBar)
+        .toolbar(.hidden, for: .tabBar)
         .navigationBarHidden(true)
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
-
+    
     // MARK: - Private Methods
     
     private func updateApplyButtonVisibility() {
         showApplyButton = !selectedDepartureTime.isEmpty || selectedTransfer != nil
     }
-
+    
     private func applyFilters() {
         print("Применены фильтры:")
         print("  Время отправления: \(selectedDepartureTime.map { $0.rawValue }.joined(separator: ", "))")
@@ -88,6 +89,6 @@ struct FilterView: View {
     }
 }
 
-//#Preview {
-//    FilterView()
-//}
+#Preview {
+    FilterView()
+}
