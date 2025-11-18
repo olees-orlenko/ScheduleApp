@@ -6,7 +6,7 @@ struct SettingsView: View {
     
     // MARK: - Properties
     
-    @State private var isDarkModeEnabled = false
+    @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled: Bool = false
     
     // MARK: - Body
     

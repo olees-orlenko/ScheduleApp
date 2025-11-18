@@ -15,6 +15,7 @@ struct MainView: View {
     @State private var departureCity: City?
     @State private var arrivalCity: City?
     @State private var isFindButtonTapped = false
+    @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled: Bool = false
     
     private var isFindButtonEnabled: Bool {
         departureCity != nil && arrivalCity != nil
@@ -54,9 +55,11 @@ struct MainView: View {
             }
             .fullScreenCover(isPresented: $citySelectionForDeparture) {
                 CitySelectionView(selectedCity: $departureCity)
+                    .environment(\.colorScheme, isDarkModeEnabled ? .dark : .light)
             }
             .fullScreenCover(isPresented: $citySelectionForArrival) {
                 CitySelectionView(selectedCity: $arrivalCity)
+                    .environment(\.colorScheme, isDarkModeEnabled ? .dark : .light)
             }
             .navigationDestination(for: CityStationPair.self) { pair in
                 MainView(selectedStation: pair.station, selectedCity: pair.city)
