@@ -5,7 +5,7 @@ struct Story: Identifiable, Equatable {
     let imageName: String
     let title: String?
     let text: String
-    let isSeen: Bool
+    var isSeen: Bool
     
     static let story1 = Story(
         imageName: "0",
@@ -25,13 +25,13 @@ struct Story: Identifiable, Equatable {
         imageName: "2",
         title: "Text Text Text Text Text Text Text Text Text",
         text: "Text Text Text Text Text Text Text Text Text",
-        isSeen: true
+        isSeen: false
     )
     
     static let story4 = Story(
         imageName: "3",
         title: "Text Text Text Text Text Text Text Text Text",
         text: "Text Text Text Text Text Text Text Text Text",
-        isSeen: true
+        isSeen: false
     )
 }

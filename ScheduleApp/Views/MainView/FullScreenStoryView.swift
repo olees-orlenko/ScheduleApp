@@ -7,47 +7,67 @@ struct FullScreenStoryView: View {
     
     // MARK: - Properties
     
-    let story: Story
     let stories: [Story]
     @Binding var currentStoryIndex: Int
     @Binding var showFullScreenStory: Bool
-    @State private var timer: Timer.TimerPublisher = Timer.publish(every: 5, on: .main, in: .common)
+    let onStoryMarkedSeen: (Int) -> Void
+    @State private var timer: Timer.TimerPublisher = Timer.publish(every: 3, on: .main, in: .common)
     @State private var cancellable: Cancellable?
     private var currentStory: Story { stories[currentStoryIndex] }
     
     // MARK: - Body
     
     var body: some View {
-        ZStack {
-            storyImage
-            VStack() {
-                closeButton
-                Spacer()
-                storyContent
+        TabView(selection: $currentStoryIndex) {
+            ForEach(stories.indices, id: \.self) { index in
+                ZStack {
+                    storyImage(for: stories[index])
+                    VStack() {
+                        closeButton
+                        Spacer()
+                        storyContent(for: stories[index])
+                    }
+                }
+                tag(index)
+                    .onAppear {
+                        print("OnAppear story at index: \(index), currentStoryIndex is now: \(currentStoryIndex)")
+                        resetTimer()
+                    }
             }
         }
+        .tabViewStyle(.page(indexDisplayMode: .never))
         .background(Color(.black))
         .toolbar(.hidden, for: .tabBar)
         .navigationBarHidden(true)
         .onAppear {
+            print("FullScreenStoryView appeared. Initial index: \(currentStoryIndex)")
             startTimer()
         }
         .onDisappear {
+            print("FullScreenStoryView disappeared.")
             stopTimer()
         }
         .onReceive(timer) { _ in
             nextStory()
+            resetTimer()
         }
-        .onTapGesture {
-            nextStory()
+        .onTapGesture { value in
+            let screenWidth = UIScreen.main.bounds.width
+            if value.x > screenWidth / 2 {
+                print("Tap next story")
+                nextStory()
+            } else {
+                print("Tap previous story")
+                previousStory()
+            }
             resetTimer()
         }
     }
     
     // MARK: - Views
     
-    private var storyImage: some View {
-        Image(currentStory.imageName)
+    private func storyImage(for story: Story) -> some View {
+        Image(story.imageName)
             .resizable()
             .aspectRatio(contentMode: .fill)
             .cornerRadius(40)
@@ -57,18 +77,25 @@ struct FullScreenStoryView: View {
         HStack {
             Spacer()
             Button(action: {
+                print("Close button tapped!")
                 showFullScreenStory = false
             }) {
                 Image(.close)
                     .font(.system(size: 30))
                     .foregroundColor(.white)
                     .padding()
+                    .contentShape(Rectangle())
             }
+            .highPriorityGesture(TapGesture().onEnded {
+                print("High priority close button tapped!")
+                showFullScreenStory = false
+            })
         }
+        .padding(.horizontal)
     }
     
-    private var storyTitleText: some View {
-        Text(currentStory.title ?? "")
+    private func storyTitleText(for story: Story) -> some View {
+        Text(story.title ?? "")
             .font(.system(size: 34, weight: .bold))
             .kerning(0.4)
             .foregroundColor(.white)
@@ -79,8 +106,8 @@ struct FullScreenStoryView: View {
             .padding(.bottom, 16)
     }
     
-    private var storyMainText: some View {
-        Text(currentStory.text)
+    private func storyMainText(for story: Story) -> some View {
+        Text(story.text)
             .font(.system(size: 20))
             .kerning(0.4)
             .foregroundColor(.white)
@@ -91,10 +118,10 @@ struct FullScreenStoryView: View {
             .padding(.bottom, 40)
     }
     
-    private var storyContent: some View {
+    private func storyContent(for story: Story) -> some View {
         VStack(alignment: .leading) {
-            storyTitleText
-            storyMainText
+            storyTitleText(for: story)
+            storyMainText(for: story)
         }
         .padding(.horizontal, 16)
     }
@@ -102,11 +129,20 @@ struct FullScreenStoryView: View {
     // MARK: - Helpers
     
     private func nextStory() {
+        onStoryMarkedSeen(currentStoryIndex)
         let nextStoryIndex = currentStoryIndex + 1
         if nextStoryIndex < stories.count {
             currentStoryIndex = nextStoryIndex
         } else {
+            onStoryMarkedSeen(currentStoryIndex)
             showFullScreenStory = false
+        }
+    }
+    
+    private func previousStory() {
+        let previousStoryIndex = currentStoryIndex - 1
+        if previousStoryIndex >= 0 {
+            currentStoryIndex = previousStoryIndex
         }
     }
     
@@ -130,9 +166,13 @@ struct FullScreenStoryView: View {
 #Preview {
     @State var showFullScreenStory = true
     @State var currentStoryIndex = 0
-    let testStory = Story(imageName: "0", title: "Text Text Text Text Text Text Text Text Text", text: "Text Text Text Text Text Text Text Text Text", isSeen: false)
-    let testStories: [Story] = [
+    var testStories: [Story] = [
         Story(imageName: "1", title: "Text Text Text Text Text Text Text Text Text", text: "Text Text Text Text Text Text Text Text Text", isSeen: false),
         Story(imageName: "Stories 1", title: "Text Text Text Text Text Text Text Text Text", text: "Text Text Text Text Text Text Text Text Text", isSeen: false)]
-    FullScreenStoryView(story: testStory, stories: testStories, currentStoryIndex: $currentStoryIndex, showFullScreenStory: $showFullScreenStory)
+    FullScreenStoryView(stories: testStories, currentStoryIndex: $currentStoryIndex, showFullScreenStory: $showFullScreenStory, onStoryMarkedSeen: { index in
+        if index >= 0 && index < testStories.count {
+            testStories[index].isSeen = true
+        }
+    }
+    )
 }
