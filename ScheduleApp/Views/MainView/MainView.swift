@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 // MARK: - MainView
 
@@ -15,17 +16,15 @@ struct MainView: View {
     @State private var departureCity: City?
     @State private var arrivalCity: City?
     @State private var isFindButtonTapped = false
+    @State private var currentStoryIndex = 0
+    @State private var showFullScreenStory = false
+    @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled: Bool = false
     
     private var isFindButtonEnabled: Bool {
         departureCity != nil && arrivalCity != nil
     }
-    
-    private let stories: [Story] = [
-        Story(imageName: "Stories", title: "Text Text Text...", isSeen: false),
-        Story(imageName: "Stories 1", title: "Text Text Text...", isSeen: false),
-        Story(imageName: "Stories 2", title: "Text Text Text...", isSeen: true),
-        Story(imageName: "Stories 3", title: "Text Text Text...", isSeen: true)
-    ]
+    @State private var stories: [Story] = [ .story1, .story2, .story3, .story4 ]
+    @State private var fullScreenConfig = FullScreenStoryView.Configuration()
     
     // MARK: - Init
     
@@ -54,12 +53,26 @@ struct MainView: View {
             }
             .fullScreenCover(isPresented: $citySelectionForDeparture) {
                 CitySelectionView(selectedCity: $departureCity)
+                    .environment(\.colorScheme, isDarkModeEnabled ? .dark : .light)
             }
             .fullScreenCover(isPresented: $citySelectionForArrival) {
                 CitySelectionView(selectedCity: $arrivalCity)
+                    .environment(\.colorScheme, isDarkModeEnabled ? .dark : .light)
             }
             .navigationDestination(for: CityStationPair.self) { pair in
                 MainView(selectedStation: pair.station, selectedCity: pair.city)
+            }
+            .fullScreenCover(isPresented: $showFullScreenStory) {
+                FullScreenStoryView(
+                    stories: stories,
+                    currentStoryIndex: $currentStoryIndex,
+                    showFullScreenStory: $showFullScreenStory,
+                    onStoryMarkedSeen: { index in
+                        if index >= 0 && index < self.stories.count {
+                            self.stories[index].isSeen = true
+                        }
+                    }, configuration: self.fullScreenConfig
+                )
             }
         }
     }
@@ -69,9 +82,17 @@ struct MainView: View {
     private var storiesSection: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12) {
-                ForEach(stories) { story in
-                    StoryView(story: story)
-                        .padding(.vertical, 2)
+                ForEach(stories.indices, id: \.self) { index in
+                    StoryView(
+                        story: stories[index],
+                        showFullScreenStory: $showFullScreenStory,
+                        currentIndex: index,
+                        onStoryTap: { tappedIndex in
+                            self.currentStoryIndex = tappedIndex
+                            self.showFullScreenStory = true
+                        }
+                    )
+                    .padding(.vertical, 2)
                 }
             }
             .padding(.horizontal, 16)
@@ -120,7 +141,7 @@ struct MainView: View {
         .padding(.leading, 16)
         .frame(width: 84, height: 128)
     }
-
+    
     private var findButtonSection: some View {
         Group {
             if isFindButtonEnabled {
