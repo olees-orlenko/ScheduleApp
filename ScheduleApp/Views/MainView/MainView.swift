@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 // MARK: - MainView
 
@@ -15,18 +16,14 @@ struct MainView: View {
     @State private var departureCity: City?
     @State private var arrivalCity: City?
     @State private var isFindButtonTapped = false
+    @State private var currentStoryIndex = 0
+    @State private var showFullScreenStory = false
     @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled: Bool = false
     
     private var isFindButtonEnabled: Bool {
         departureCity != nil && arrivalCity != nil
     }
-    
-    private let stories: [Story] = [
-        Story(imageName: "Stories", title: "Text Text Text...", isSeen: false),
-        Story(imageName: "Stories 1", title: "Text Text Text...", isSeen: false),
-        Story(imageName: "Stories 2", title: "Text Text Text...", isSeen: true),
-        Story(imageName: "Stories 3", title: "Text Text Text...", isSeen: true)
-    ]
+    private let stories: [Story] = [ .story1, .story2, .story3, .story4 ]
     
     // MARK: - Init
     
@@ -64,6 +61,10 @@ struct MainView: View {
             .navigationDestination(for: CityStationPair.self) { pair in
                 MainView(selectedStation: pair.station, selectedCity: pair.city)
             }
+            if showFullScreenStory {
+                FullScreenStoryView(story: stories[currentStoryIndex], stories: stories, currentStoryIndex: $currentStoryIndex, showFullScreenStory: $showFullScreenStory)
+                    .zIndex(1)
+            }
         }
     }
     
@@ -73,7 +74,7 @@ struct MainView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12) {
                 ForEach(stories) { story in
-                    StoryView(story: story)
+                    StoryView(story: story, showFullScreenStory: $showFullScreenStory)
                         .padding(.vertical, 2)
                 }
             }

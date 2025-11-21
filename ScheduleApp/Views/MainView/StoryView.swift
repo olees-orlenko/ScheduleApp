@@ -1,10 +1,31 @@
 import SwiftUI
 
+// MARK: - StoryView
+
 struct StoryView: View {
-    let story: Story
     
-    var body: some View {
-        ZStack(alignment: .bottomLeading) {
+    // MARK: - Properties
+    
+    let story: Story
+    @Binding var showFullScreenStory: Bool
+
+    // MARK: - Body
+
+        var body: some View {
+            Button(action: {
+                showFullScreenStory = true
+            }) {
+                ZStack(alignment: .bottomLeading) {
+                    storyImage
+                    storyText
+                }
+                .frame(width: 92, height: 140)
+            }
+        }
+    
+    // MARK: - Views
+
+        private var storyImage: some View {
             Image(story.imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
@@ -17,8 +38,10 @@ struct StoryView: View {
                         .stroke(Color("blue"), lineWidth: 4)
                     : nil
                 )
-            
-            Text(story.title)
+        }
+
+        private var storyText: some View {
+            Text(story.text)
                 .font(.system(size: 12, weight: .regular))
                 .kerning(0.4)
                 .foregroundColor(.white)
@@ -27,11 +50,12 @@ struct StoryView: View {
                 .padding(.horizontal, 8)
                 .padding(.bottom, 12)
         }
-        .frame(width: 92, height: 140)
-    }
 }
 
+// MARK: - StoryView_Preview
+
 #Preview {
-    let testStory = Story(imageName: "Stories", title: "Text Text Text Text Text Text Text Text Text", isSeen: false)
-    StoryView(story: testStory)
+    @State var showFullScreenStory = false
+    let testStory = Story(imageName: "Stories", title: nil, text: "Text Text Text Text Text Text Text Text Text", isSeen: false)
+    StoryView(story: testStory, showFullScreenStory: $showFullScreenStory)
 }
