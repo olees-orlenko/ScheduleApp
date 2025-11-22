@@ -24,6 +24,7 @@ struct MainView: View {
         departureCity != nil && arrivalCity != nil
     }
     @State private var stories: [Story] = [ .story1, .story2, .story3, .story4 ]
+    @State private var fullScreenConfig = FullScreenStoryView.Configuration()
     
     // MARK: - Init
     
@@ -70,7 +71,7 @@ struct MainView: View {
                         if index >= 0 && index < self.stories.count {
                             self.stories[index].isSeen = true
                         }
-                    }
+                    }, configuration: self.fullScreenConfig
                 )
             }
         }
