@@ -1,5 +1,11 @@
 import SwiftUI
 
+extension CGFloat {
+    static let frameWidth: CGFloat = 92
+    static let frameHeight: CGFloat = 140
+    static let radius: CGFloat = 16
+}
+
 // MARK: - StoryView
 
 struct StoryView: View {
@@ -21,7 +27,7 @@ struct StoryView: View {
                 storyImage
                 storyText
             }
-            .frame(width: 92, height: 140)
+            .frame(width: .frameWidth, height: .frameHeight)
         }
     }
     
@@ -31,12 +37,12 @@ struct StoryView: View {
         Image(story.imageName)
             .resizable()
             .aspectRatio(contentMode: .fill)
-            .frame(width: 92, height: 140)
-            .cornerRadius(16)
+            .frame(width: .frameWidth, height: .frameHeight)
+            .cornerRadius(.radius)
             .opacity(story.isSeen ? 0.5 : 1.0)
             .overlay(
                 !story.isSeen ?
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: .radius)
                     .stroke(Color("blue"), lineWidth: 4)
                 : nil
             )

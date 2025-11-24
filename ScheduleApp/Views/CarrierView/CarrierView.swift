@@ -36,7 +36,7 @@ struct CarrierView: View {
     // MARK: - Views
     
     private var navigationHeader: some View {
-        NavigationLeftButtonView(title: "Информация о перевозчике", showBackButton: true, backAction: {
+        NavigationLeftButtonView(title: Constants.CarrierView.carrierTitle, showBackButton: true, backAction: {
             dismiss()
         })
     }
@@ -67,7 +67,7 @@ struct CarrierView: View {
 
     private var carrierEmailBlock: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("E-mail")
+            Text(Constants.CarrierView.carrierEmail)
                 .font(.system(size: 17, weight: .regular))
                 .foregroundColor(.primary)
                 .kerning(-0.41)
@@ -84,7 +84,7 @@ struct CarrierView: View {
 
     private var carrierPhoneBlock: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Телефон")
+            Text(Constants.CarrierView.carrierPhone)
                 .font(.system(size: 17, weight: .regular))
                 .foregroundColor(.primary)
                 .kerning(-0.41)

@@ -4,28 +4,7 @@ import Combine
 // MARK: - FullScreenStoryView
 
 struct FullScreenStoryView: View {
-    
-    // MARK: - Configuration Struct
-    
-    struct Configuration {
-        let timerTickInternal: TimeInterval
-        let storyDuration: TimeInterval
-        let storiesCount: Int
-        let progressPerTick: CGFloat
-        
-        init(
-            storiesCount: Int = 4,
-            storyDuration: TimeInterval = 2.5,
-            timerTickInternal: TimeInterval = 0.05
-        ) {
-            self.storiesCount = storiesCount
-            self.storyDuration = storyDuration
-            self.timerTickInternal = timerTickInternal
-            let ticksPerStorySection = storyDuration / timerTickInternal
-            self.progressPerTick = 1.0 / CGFloat(ticksPerStorySection)
-        }
-    }
-    
+
     // MARK: - Properties
     
     let stories: [Story]
@@ -35,7 +14,7 @@ struct FullScreenStoryView: View {
     @State private var timer: Publishers.Autoconnect<Timer.TimerPublisher>
     @State private var cancellable: AnyCancellable?
     @State private var progress: CGFloat = 0.0
-    private let configuration: Configuration
+    private let configuration: StoryConfiguration
     private var currentStory: Story { stories[currentStoryIndex] }
     
     private var totalProgressForDisplay: CGFloat {
@@ -52,7 +31,7 @@ struct FullScreenStoryView: View {
         currentStoryIndex: Binding<Int>,
         showFullScreenStory: Binding<Bool>,
         onStoryMarkedSeen: @escaping (Int) -> Void,
-        configuration: Configuration = Configuration()
+        configuration: StoryConfiguration = StoryConfiguration()
     ) {
         self.stories = stories
         self._currentStoryIndex = currentStoryIndex

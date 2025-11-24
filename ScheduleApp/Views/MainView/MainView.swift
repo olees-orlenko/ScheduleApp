@@ -24,7 +24,7 @@ struct MainView: View {
         departureCity != nil && arrivalCity != nil
     }
     @State private var stories: [Story] = [ .story1, .story2, .story3, .story4 ]
-    @State private var fullScreenConfig = FullScreenStoryView.Configuration()
+    @State private var fullScreenConfig = StoryConfiguration()
     
     // MARK: - Init
     
@@ -109,10 +109,10 @@ struct MainView: View {
             
             HStack(spacing: -32) {
                 VStack {
-                    cityButton(title: displayText(for: departureCity, defaultText: "Откуда")) {
+                    cityButton(title: displayText(for: departureCity, defaultText: Constants.MainView.from)) {
                         citySelectionForDeparture = true
                     }
-                    cityButton(title: displayText(for: arrivalCity, defaultText: "Куда")) {
+                    cityButton(title: displayText(for: arrivalCity, defaultText: Constants.MainView.to)) {
                         citySelectionForArrival = true
                     }
                 }
@@ -156,7 +156,7 @@ struct MainView: View {
                 Button(action: {
                     isFindButtonTapped = true
                 }) {
-                    Text("Найти")
+                    Text(Constants.MainView.findButton)
                         .font(.system(size: 17, weight: .bold))
                         .foregroundColor(.white)
                         .frame(width: 150, height: 60)

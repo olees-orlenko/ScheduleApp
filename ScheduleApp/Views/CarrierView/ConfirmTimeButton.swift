@@ -20,7 +20,7 @@ struct ConfirmTimeButton: View {
     
     private var button: some View {
         Button(action: action) {
-            Text("Уточнить время")
+            Text(Constants.ConfirmTimeButton.timeButton)
                 .font(.system(size: 17, weight: .bold))
                 .foregroundColor(.white)
                 .padding(.vertical, 20)
