@@ -30,7 +30,7 @@ struct TabBarView: View {
             .tag(0)
             
             NavigationStack {
-                SettingsViewRepresentable()
+                SettingsView()
             }
             .tabItem {
                 Image("Vector")

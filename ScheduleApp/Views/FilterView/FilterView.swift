@@ -15,7 +15,7 @@ struct FilterView: View {
             // MARK: - Filters
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("Время отправления")
+                    Text(Constants.FilterView.departureTime)
                         .font(.system(size: 24, weight: .bold))
                         .padding(.horizontal, 16)
                         .padding(.top, 16)
@@ -34,7 +34,7 @@ struct FilterView: View {
                         }
                     }
                     .padding(.horizontal, 16)
-                    Text("Показывать варианты с пересадками")
+                    Text(Constants.FilterView.showTransfers)
                         .font(.system(size: 24, weight: .bold))
                         .padding(.horizontal, 16)
                         .padding(.top, 16)
@@ -56,7 +56,7 @@ struct FilterView: View {
             // MARK: - Apply Button
             if showApplyButton {
                 Button(action: applyFilters) {
-                    Text("Применить")
+                    Text(Constants.FilterView.applyButton)
                         .font(.system(size: 17, weight: .bold))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)

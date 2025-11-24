@@ -65,7 +65,7 @@ struct ScheduleView: View {
     
     private var emptyScheduleView: some View {
         VStack {
-            Text("Вариантов нет")
+            Text(Constants.ScheduleView.emptyScheduleText)
                 .font(.system(size: 24, weight: .bold))
                 .foregroundColor(.primary)
                 .frame(maxWidth: .infinity, alignment: .center)
