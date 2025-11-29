@@ -39,4 +39,13 @@ public struct Constants {
         public static let to = "Куда"
         public static let findButton = "Найти"
     }
+    
+    // MARK: - SettingsView Strings
+    
+    public struct SettingsView {
+        public static let appVersion = "Версия 1.0 (beta)"
+        public static let appUseApiText = "Приложение использует API «Яндекс.Расписания»"
+        public static let darkTheme = "Тёмная тема"
+        public static let agreement = "Пользовательское соглашение"
+    }
 }
