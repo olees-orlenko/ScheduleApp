@@ -3,7 +3,7 @@ import Foundation
 enum NetworkError: Error, LocalizedError {
     case noInternet
     case serverError(statusCode: Int)
-
+    
     var errorDescription: String? {
         switch self {
         case .noInternet:
@@ -16,15 +16,21 @@ enum NetworkError: Error, LocalizedError {
 
 actor NetworkClient {
     private let session: URLSession
-
+    
     init(session: URLSession = .shared) {
         self.session = session
     }
-
+    
     func checkApiAvailability() async throws {
         try await Task.sleep(for: .seconds(1))
         // throw NetworkError.noInternet
         // throw NetworkError.serverError(statusCode: 500)
         print("API is available.")
+    }
+    
+    func applyFilters(departureTimes: Set<Time>, transferOption: Transfer?) async throws {
+        print("NetworkClient: Фильтры отправлены.")
+        try await Task.sleep(for: .seconds(0.5))
+        print("NetworkClient: Фильтры применены.")
     }
 }
