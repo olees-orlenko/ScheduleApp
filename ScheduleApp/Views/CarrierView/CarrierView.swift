@@ -6,24 +6,36 @@ struct CarrierView: View {
     
     // MARK: - Properties
     
-    let carrier: CarrierInfo
+    let carrierCode: String
+    @StateObject private var viewModel: CarrierViewModel
     
     // MARK: - Environment
     
     @Environment(\.dismiss) var dismiss
     
+    // MARK: - Init
+    
+    init(carrierCode: String) {
+        self.carrierCode = carrierCode
+        _viewModel = StateObject(wrappedValue: CarrierViewModel(carrierCode: carrierCode))
+    }
+    
+    
     // MARK: - Body
     
     var body: some View {
+        if let errorType = viewModel.errorType {
+                    ErrorView(type: errorType)
+                } else {
         VStack(spacing: 0) {
             navigationHeader
             ScrollView {
                 VStack(spacing: 0) {
-                    carrierLogoView
-                    carrierFullNameView
-                    carrierEmailBlock
+                    carrierLogoView()
+                    carrierFullNameView()
+                    carrierEmailBlock()
                     Spacer()
-                    carrierPhoneBlock
+                    carrierPhoneBlock()
                     Spacer()
                         .padding(.bottom, 50)
                 }
@@ -31,8 +43,11 @@ struct CarrierView: View {
         }
         .background(Color(.systemBackground).ignoresSafeArea())
         .navigationBarHidden(true)
+        .task {
+            await viewModel.loadCarrierInfo()
+        }
     }
-
+}
     // MARK: - Views
     
     private var navigationHeader: some View {
@@ -40,22 +55,29 @@ struct CarrierView: View {
             dismiss()
         })
     }
-
-    private var carrierLogoView: some View {
+    
+    private func carrierLogoView() -> some View {
         VStack {
-            Image(carrier.carrierLogoName)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 343, height: 104)
-                .padding(.top, 16)
+            AsyncImage(url: viewModel.carrierLogoURL) { image in
+                image
+                    .resizable()
+                    .scaledToFit()
+            } placeholder: {
+                Image("")
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(.gray)
+            }
+            .frame(width: 343, height: 104)
+            .padding(.top, 16)
         }
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity)
     }
-
-    private var carrierFullNameView: some View {
+    
+    private func carrierFullNameView() -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(carrier.carrierFullName)
+            Text(viewModel.carrierFullName)
                 .font(.system(size: 24, weight: .bold))
                 .foregroundColor(.primary)
                 .padding(.top, 16)
@@ -64,14 +86,14 @@ struct CarrierView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
-
-    private var carrierEmailBlock: some View {
+    
+    private func carrierEmailBlock() -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(Constants.CarrierView.carrierEmail)
                 .font(.system(size: 17, weight: .regular))
                 .foregroundColor(.primary)
                 .kerning(-0.41)
-            Text(carrier.email)
+            Text(viewModel.carrierEmail)
                 .font(.system(size: 12, weight: .regular))
                 .foregroundColor(Color("blue"))
                 .kerning(0.4)
@@ -81,14 +103,14 @@ struct CarrierView: View {
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity, alignment: .center)
     }
-
-    private var carrierPhoneBlock: some View {
+    
+    private func carrierPhoneBlock() -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(Constants.CarrierView.carrierPhone)
                 .font(.system(size: 17, weight: .regular))
                 .foregroundColor(.primary)
                 .kerning(-0.41)
-            Text(carrier.phone)
+            Text(viewModel.carrierPhone)
                 .font(.system(size: 12, weight: .regular))
                 .foregroundColor(Color("blue"))
                 .kerning(0.4)
@@ -103,11 +125,5 @@ struct CarrierView: View {
 // MARK: - CarrierView_Preview
 
 #Preview{
-    CarrierView(carrier:         CarrierInfo(
-        carrierLogoName: "RZD",
-        carrierFullName: "ОАО 'РЖД'",
-        email: "i.lozkgina@yandex.ru",
-        phone: "+7 (904) 329-27-71",
-    ))
-    .preferredColorScheme(.dark)
+    CarrierView(carrierCode: "680")
 }

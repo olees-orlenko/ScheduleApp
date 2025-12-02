@@ -2,6 +2,7 @@ import Foundation
 
 struct Сarrier: Identifiable {
     let id = UUID()
+    let carrierCode: String
     let carrierLogoName: String
     let carrierName: String
     let transfer: String?
@@ -14,6 +15,7 @@ struct Сarrier: Identifiable {
 extension Сarrier {
     static let schedule: [Сarrier] = [
         Сarrier(
+            carrierCode: "680",
             carrierLogoName: "Brand Icon",
             carrierName: "РЖД",
             transfer: "С пересадкой в Костроме",
@@ -23,6 +25,7 @@ extension Сarrier {
             date: "14 января"
         ),
         Сarrier(
+            carrierCode: "680",
             carrierLogoName: "Brand Icon",
             carrierName: "РЖД",
             transfer: "",
@@ -32,6 +35,7 @@ extension Сarrier {
             date: "14 января"
         ),
         Сarrier(
+            carrierCode: "680",
             carrierLogoName: "Brand Icon",
             carrierName: "РЖД",
             transfer: "С пересадкой в Костроме",
@@ -41,6 +45,7 @@ extension Сarrier {
             date: "14 января"
         ),
         Сarrier(
+            carrierCode: "680",
             carrierLogoName: "Brand Icon",
             carrierName: "РЖД",
             transfer: "С пересадкой в Костроме",
@@ -50,6 +55,7 @@ extension Сarrier {
             date: "14 января"
         ),
         Сarrier(
+            carrierCode: "680",
             carrierLogoName: "Brand Icon",
             carrierName: "РЖД",
             transfer: "С пересадкой в Костроме",
@@ -59,6 +65,7 @@ extension Сarrier {
             date: "14 января"
         ),
         Сarrier(
+            carrierCode: "680",
             carrierLogoName: "Brand Icon",
             carrierName: "РЖД",
             transfer: "С пересадкой в Костроме",
