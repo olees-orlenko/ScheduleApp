@@ -30,7 +30,7 @@ struct ScheduleCardView: View {
     private var carrierInfoSection: some View {
         HStack {
             CarrierLogoView(
-                logoName: schedule.carrierLogoName,
+                logoName: schedule.carrierLogoName ?? "",
                 carrierName: schedule.carrierName,
                 transfer: schedule.transfer
             )

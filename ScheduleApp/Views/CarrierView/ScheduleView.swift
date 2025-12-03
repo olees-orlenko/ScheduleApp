@@ -4,29 +4,30 @@ import SwiftUI
 
 struct ScheduleView: View {
     
-    // MARK: - Environment
-    
-    @Environment(\.dismiss) var dismiss
-    
-    // MARK: - State
-    
-    @State private var path = NavigationPath()
-    
     // MARK: - Properties
     
-    let scheduleList = Сarrier.schedule
-    
+    @Environment(\.dismiss) var dismiss
+    @State private var path = NavigationPath()
+    @StateObject private var viewModel = ScheduleViewModel()
+
     // MARK: - Body
     
     var body: some View {
         NavigationStack(path: $path) {
             ZStack(alignment: .bottom) {
-                mainContent
-                navigationLinkButton
+                if let errorType = viewModel.errorType {
+                    ErrorView(type: errorType)
+                } else {
+                    mainContent
+                    navigationLinkButton
+                }
             }
         }
         .toolbar(.hidden, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
+        .task {
+            await viewModel.loadSchedule()
+        }
     }
     
     // MARK: - Views
@@ -37,7 +38,7 @@ struct ScheduleView: View {
             Spacer()
             VStack(alignment: .leading, spacing: 16) {
                 routeTitle
-                if scheduleList.isEmpty {
+                if viewModel.scheduleList.isEmpty {
                     emptyScheduleView
                 } else {
                     scheduleListView
@@ -55,7 +56,7 @@ struct ScheduleView: View {
     }
     
     private var routeTitle: some View {
-        Text("Москва (Ярославский вокзал) → Санкт Петербург\n(Балтийский вокзал)")
+        Text(viewModel.routeTitle)
             .font(.system(size: 24, weight: .bold))
             .lineLimit(nil)
             .fixedSize(horizontal: false, vertical: true)
@@ -77,7 +78,7 @@ struct ScheduleView: View {
     private var scheduleListView: some View {
         ScrollView {
             VStack(spacing: 0) {
-                ForEach(scheduleList) { schedule in
+                ForEach(viewModel.scheduleList) { schedule in
                     ScheduleCardView(schedule: schedule)
                 }
             }
