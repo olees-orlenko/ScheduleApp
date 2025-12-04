@@ -4,54 +4,40 @@ import Combine
 // MARK: - FullScreenStoryView
 
 struct FullScreenStoryView: View {
-
+    
     // MARK: - Properties
     
-    let stories: [Story]
-    let onStoryMarkedSeen: (Int) -> Void
-    @Binding var currentStoryIndex: Int
-    @Binding var showFullScreenStory: Bool
-    @State private var timer: Publishers.Autoconnect<Timer.TimerPublisher>
-    @State private var cancellable: AnyCancellable?
-    @State private var progress: CGFloat = 0.0
+    @StateObject private var viewModel: FullScreenStoryViewModel
     private let configuration: StoryConfiguration
-    private var currentStory: Story { stories[currentStoryIndex] }
-    
-    private var totalProgressForDisplay: CGFloat {
-        let sectionProgress = 1.0 / CGFloat(configuration.storiesCount)
-        let completedSectionsProgress = CGFloat(currentStoryIndex) * sectionProgress
-        let currentSectionFillingProgress = progress * sectionProgress
-        return completedSectionsProgress + currentSectionFillingProgress
-    }
     
     // MARK: - Initializer
     
-    public init(
-        stories: [Story],
-        currentStoryIndex: Binding<Int>,
-        showFullScreenStory: Binding<Bool>,
-        onStoryMarkedSeen: @escaping (Int) -> Void,
-        configuration: StoryConfiguration = StoryConfiguration()
-    ) {
-        self.stories = stories
-        self._currentStoryIndex = currentStoryIndex
-        self._showFullScreenStory = showFullScreenStory
-        self.onStoryMarkedSeen = onStoryMarkedSeen
+    init(stories: [Story],
+         currentStoryIndex: Binding<Int>,
+         showFullScreenStory: Binding<Bool>,
+         onStoryMarkedSeen: @escaping (Int) -> Void,
+         configuration: StoryConfiguration) {
         self.configuration = configuration
-        self._timer = State(initialValue: Timer.publish(every: configuration.timerTickInternal, on: .main, in: .common).autoconnect())
+        _viewModel = StateObject(wrappedValue: FullScreenStoryViewModel(
+            stories: stories,
+            currentStoryIndex: currentStoryIndex,
+            showFullScreenStory: showFullScreenStory,
+            onStoryMarkedSeen: onStoryMarkedSeen,
+            configuration: configuration
+        ))
     }
     
     // MARK: - Body
     
     var body: some View {
         ZStack {
-            TabView(selection: $currentStoryIndex) {
-                ForEach(stories.indices, id: \.self) { index in
+            TabView(selection: $viewModel.currentStoryIndex) {
+                ForEach(viewModel.stories.indices, id: \.self) { index in
                     ZStack {
-                        storyImage(for: stories[index])
+                        storyImage(for: viewModel.stories[index])
                         VStack(alignment: .trailing, spacing: 0) {
                             HStack {
-                                ProgressBar(numberOfSections: 3, progress: totalProgressForDisplay)
+                                ProgressBar(numberOfSections: 3, progress: viewModel.totalProgressForDisplay)
                                     .padding(.leading, 12)
                                     .padding(.trailing, 12)
                                     .padding(.top, 28)
@@ -66,15 +52,15 @@ struct FullScreenStoryView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                         VStack {
                             Spacer()
-                            storyContent(for: stories[index])
+                            storyContent(for: viewModel.stories[index])
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                     }
                     .tag(index)
                     .onAppear {
-                        print("OnAppear story at index: \(index), currentStoryIndex is now: \(currentStoryIndex)")
-                        progress = 0.0
-                        startTimer()
+                        print("OnAppear story at index: \(index), currentStoryIndex is now: \(viewModel.currentStoryIndex)")
+                        viewModel.progress = 0.0
+                        viewModel.startTimer()
                     }
                 }
             }
@@ -83,25 +69,22 @@ struct FullScreenStoryView: View {
             .toolbar(.hidden, for: .tabBar)
             .navigationBarHidden(true)
             .onAppear {
-                print("FullScreenStoryView appeared. Initial index: \(currentStoryIndex)")
-                progress = 0.0
-                startTimer()
+                print("FullScreenStoryView appeared. Initial index: \(viewModel.currentStoryIndex)")
+                viewModel.progress = 0.0
+                viewModel.startTimer()
             }
             .onDisappear {
                 print("FullScreenStoryView disappeared.")
-                stopTimer()
-            }
-            .onReceive(timer) { _ in
-                timerTick()
+                viewModel.stopTimer()
             }
             .onTapGesture { value in
                 let screenWidth = UIScreen.main.bounds.width
                 if value.x > screenWidth / 2 {
                     print("Tap next story")
-                    nextStory()
+                    viewModel.nextStory()
                 } else {
                     print("Tap previous story")
-                    previousStory()
+                    viewModel.previousStory()
                 }
             }
         }
@@ -122,7 +105,7 @@ struct FullScreenStoryView: View {
             Spacer()
             Button(action: {
                 print("Close button tapped!")
-                showFullScreenStory = false
+                viewModel.closeView()
             }) {
                 Image(.close)
                     .font(.system(size: 30))
@@ -131,7 +114,7 @@ struct FullScreenStoryView: View {
             }
             .highPriorityGesture(TapGesture().onEnded {
                 print("High priority close button tapped!")
-                showFullScreenStory = false
+                viewModel.closeView()
             })
         }
         .padding(.trailing, 12)
@@ -168,65 +151,6 @@ struct FullScreenStoryView: View {
         }
         .padding(.horizontal, 16)
     }
-    
-    // MARK: - Helpers
-    
-    private func timerTick() {
-        var nextProgress = progress + configuration.progressPerTick
-        if nextProgress >= 1.0 {
-            progress = 1.0
-            if currentStoryIndex < configuration.storiesCount - 1 {
-                onStoryMarkedSeen(currentStoryIndex)
-                currentStoryIndex += 1
-                print("Timer: Переходим к следующей истории. Индекс: \(currentStoryIndex)")
-            } else {
-                print("Timer: Последняя история.")
-                onStoryMarkedSeen(currentStoryIndex)
-                stopTimer()
-                showFullScreenStory = false
-            }
-        } else {
-            progress = nextProgress
-        }
-    }
-    
-    private func nextStory() {
-        onStoryMarkedSeen(currentStoryIndex)
-        let nextStoryIndex = currentStoryIndex + 1
-        if nextStoryIndex < stories.count {
-            currentStoryIndex = nextStoryIndex
-            print("Tap: Переходим к следующей истории. Индекс: \(currentStoryIndex)")
-            progress = 0.0
-            startTimer()
-        } else {
-            print("Tap: Последняя история.")
-            onStoryMarkedSeen(currentStoryIndex)
-            stopTimer()
-            showFullScreenStory = false
-        }
-    }
-    
-    private func previousStory() {
-        let previousStoryIndex = currentStoryIndex - 1
-        if previousStoryIndex >= 0 {
-            currentStoryIndex = previousStoryIndex
-            print("Tap: Переходим к предыдущей истории. Индекс:\(currentStoryIndex)")
-            progress = 0.0
-            startTimer()
-        } else {
-            print("Tap: Первая история.")
-        }
-    }
-    
-    private func startTimer() {
-        cancellable?.cancel()
-        cancellable = timer.sink { _ in }
-    }
-    
-    private func stopTimer() {
-        cancellable?.cancel()
-        cancellable = nil
-    }
 }
 
 // MARK: - FullScreenStoryView_Preview
@@ -234,6 +158,7 @@ struct FullScreenStoryView: View {
 #Preview {
     @State var showFullScreenStory = true
     @State var currentStoryIndex = 0
+    let configuration: StoryConfiguration
     var testStories: [Story] = [
         Story(imageName: "1", title: "Text Text Text Text Text Text Text Text Text", text: "Text Text Text Text Text Text Text Text Text", isSeen: false),
         Story(imageName: "Stories 1", title: "Text Text Text Text Text Text Text Text Text", text: "Text Text Text Text Text Text Text Text Text", isSeen: false)]
@@ -241,6 +166,6 @@ struct FullScreenStoryView: View {
         if index >= 0 && index < testStories.count {
             testStories[index].isSeen = true
         }
-    }
+    }, configuration: configuration
     )
 }
