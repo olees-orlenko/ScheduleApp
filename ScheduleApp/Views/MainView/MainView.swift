@@ -8,22 +8,9 @@ struct MainView: View {
     // MARK: - Properties
     
     @Environment(\.dismiss) private var dismiss
-    @State private var departureStationCode: String = ""
-    @State private var departureStationName: String = Constants.MainView.from
-    @State private var arrivalStationCode: String = ""
-    @State private var arrivalStationName: String = Constants.MainView.to
-    @State private var citySelectionForDeparture = false
-    @State private var citySelectionForArrival = false
-    @State private var isFindButtonTapped = false
-    @State private var currentStoryIndex = 0
-    @State private var showFullScreenStory = false
     @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled: Bool = false
-    
-    private var isFindButtonEnabled: Bool {
-        !departureStationCode.isEmpty && !arrivalStationCode.isEmpty
-    }
-    @State private var stories: [Story] = [ .story1, .story2, .story3, .story4 ]
     @State private var fullScreenConfig = StoryConfiguration()
+    @StateObject private var viewModel = MainViewModel()
     
     // MARK: - Body
     
@@ -41,29 +28,27 @@ struct MainView: View {
                 .background(Color(.systemBackground).ignoresSafeArea())
                 .navigationBarHidden(true)
             }
-            .fullScreenCover(isPresented: $citySelectionForDeparture) {
+            .fullScreenCover(isPresented: $viewModel.citySelectionForDeparture) {
                 CitySelectionView(
-                    selectedStationCode: $departureStationCode,
-                    selectedStationName: $departureStationName
+                    selectedStationCode: $viewModel.departureStationCode,
+                    selectedStationName: $viewModel.departureStationName
                 )
                 .environment(\.colorScheme, isDarkModeEnabled ? .dark : .light)
             }
-            .fullScreenCover(isPresented: $citySelectionForArrival) {
+            .fullScreenCover(isPresented: $viewModel.citySelectionForArrival) {
                 CitySelectionView(
-                    selectedStationCode: $arrivalStationCode,
-                    selectedStationName: $arrivalStationName
+                    selectedStationCode: $viewModel.arrivalStationCode,
+                    selectedStationName: $viewModel.arrivalStationName
                 )
                 .environment(\.colorScheme, isDarkModeEnabled ? .dark : .light)
             }
-            .fullScreenCover(isPresented: $showFullScreenStory) {
+            .fullScreenCover(isPresented: $viewModel.showFullScreenStory) {
                 FullScreenStoryView(
-                    stories: stories,
-                    currentStoryIndex: $currentStoryIndex,
-                    showFullScreenStory: $showFullScreenStory,
+                    stories: viewModel.stories,
+                    currentStoryIndex: $viewModel.currentStoryIndex,
+                    showFullScreenStory: $viewModel.showFullScreenStory,
                     onStoryMarkedSeen: { index in
-                        if index >= 0 && index < self.stories.count {
-                            self.stories[index].isSeen = true
-                        }
+                        viewModel.markStoryAsSeen(index: index)
                     }, configuration: self.fullScreenConfig
                 )
             }
@@ -75,14 +60,13 @@ struct MainView: View {
     private var storiesSection: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12) {
-                ForEach(stories.indices, id: \.self) { index in
+                ForEach(viewModel.stories.indices, id: \.self) { index in
                     StoryView(
-                        story: stories[index],
-                        showFullScreenStory: $showFullScreenStory,
+                        story: viewModel.stories[index],
+                        showFullScreenStory: $viewModel.showFullScreenStory,
                         currentIndex: index,
                         onStoryTap: { tappedIndex in
-                            self.currentStoryIndex = tappedIndex
-                            self.showFullScreenStory = true
+                            viewModel.handleStoryTap(index: tappedIndex)
                         }
                     )
                     .padding(.vertical, 2)
@@ -102,11 +86,11 @@ struct MainView: View {
             
             HStack(spacing: -32) {
                 VStack {
-                    cityButton(title: departureStationName) {
-                        citySelectionForDeparture = true
+                    cityButton(title: viewModel.departureStationName) {
+                        viewModel.citySelectionForDeparture = true
                     }
-                    cityButton(title: arrivalStationName) {
-                        citySelectionForArrival = true
+                    cityButton(title: viewModel.arrivalStationName) {
+                        viewModel.citySelectionForArrival = true
                     }
                 }
                 .frame(width: 259, height: 96)
@@ -123,12 +107,7 @@ struct MainView: View {
     
     private var swapButton: some View {
         Button {
-            let cityCode = departureStationCode
-            let cityName = departureStationName
-            departureStationCode = arrivalStationCode
-            departureStationName = arrivalStationName
-            arrivalStationCode = cityCode
-            arrivalStationName = cityName
+            viewModel.swapStations()
         } label: {
             Image("Сhange")
                 .resizable()
@@ -142,20 +121,20 @@ struct MainView: View {
     
     private var findButtonSection: some View {
         Group {
-            if isFindButtonEnabled {
+            if viewModel.isFindButtonEnabled {
                 NavigationLink(
-                    destination: ScheduleView(fromStationCode: departureStationCode,
-                                              toStationCode: arrivalStationCode,
-                                              fromStationName: departureStationName,
-                                              toStationName: arrivalStationName)
+                    destination: ScheduleView(fromStationCode: viewModel.departureStationCode,
+                                              toStationCode: viewModel.arrivalStationCode,
+                                              fromStationName: viewModel.departureStationName,
+                                              toStationName: viewModel.arrivalStationName)
                     .toolbar(.hidden, for: .tabBar),
-                    isActive: $isFindButtonTapped
+                    isActive: $viewModel.isFindButtonTapped
                 ) {
                     EmptyView()
                 }
                 .hidden()
                 Button(action: {
-                    isFindButtonTapped = true
+                    viewModel.isFindButtonTapped = true
                 }) {
                     Text(Constants.MainView.findButton)
                         .font(.system(size: 17, weight: .bold))
