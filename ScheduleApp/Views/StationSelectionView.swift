@@ -1,11 +1,16 @@
 import SwiftUI
 
+// MARK: - StationSelectionView
+
 struct StationSelectionView: View {
+    
+    // MARK: - Properties
+    
     let city: City
     let onDismiss: () -> Void
     @Binding var path: NavigationPath
-    @Binding var selectedCityBinding: City?
-    
+    @Binding var selectedStationCode: String
+    @Binding var selectedStationName: String
     @State private var searchText: String = ""
     @Environment(\.dismiss) var dismiss
     
@@ -16,6 +21,8 @@ struct StationSelectionView: View {
             return city.stations.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
         }
     }
+    
+    // MARK: - Body
     
     var body: some View {
         VStack(spacing: 0) {
@@ -56,16 +63,14 @@ struct StationSelectionView: View {
                             .font(.system(size: 17, weight: .regular))
                             .foregroundColor(.primary)
                         Spacer()
-                        
                         Image("Chevron")
                             .renderingMode(.template)
                             .foregroundColor(.primary)
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        var resultCity = city
-                        resultCity.selectedStation = station
-                        selectedCityBinding = resultCity
+                        selectedStationCode = station.yandexCode
+                        selectedStationName = "\(city.name), \(station.name)"
                         onDismiss()
                     }
                     .listRowSeparator(.hidden)

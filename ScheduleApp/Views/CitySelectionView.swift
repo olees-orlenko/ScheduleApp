@@ -1,33 +1,27 @@
 import SwiftUI
 
+// MARK: - CitySelectionView
+
 struct CitySelectionView: View {
     
-    let cities: [City] = [
-        City(name: "Москва", stations: [
-            Station(name: "Павелецкий вокзал"),
-            Station(name: "Курский вокзал")
-        ]),
-        City(name: "Санкт-Петербург", stations: [
-            Station(name: "Московский вокзал"),
-            Station(name: "Ладожский вокзал")
-        ]),
-        City(name: "Новосибирск", stations: [
-            Station(name: "Новосибирск-Главный")
-        ])
-    ]
+    // MARK: - Properties
     
+    @StateObject var viewModel = StationsListViewModel()
     @State private var path = NavigationPath()
     @State private var searchText: String = ""
-    @Binding var selectedCity: City?
+    @Binding var selectedStationCode: String
+    @Binding var selectedStationName: String
     @Environment(\.dismiss) var dismiss
     
     private var filteredCities: [City] {
         if searchText.isEmpty {
-            return cities
+            return viewModel.allCities
         } else {
-            return cities.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+            return viewModel.allCities.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
         }
     }
+    
+    // MARK: - Body
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -63,44 +57,67 @@ struct CitySelectionView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 8)
                 ZStack {
-                    List {
-                        ForEach(filteredCities) { city in
-                            HStack {
-                                Text(city.name)
-                                    .font(.system(size: 17, weight: .regular))
-                                    .foregroundColor(.primary)
-                                Spacer()
-                                Image("Chevron")
-                                    .renderingMode(.template)
-                                    .foregroundColor(.primary)
-                            }
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                path.append(city)
-                            }
-                            .listRowSeparator(.hidden)
-                            .listRowBackground(Color(.systemBackground))
-                        }
-                    }
-                    .listStyle(.plain)
-                    .background(Color(.systemBackground).ignoresSafeArea())
-                    if filteredCities.isEmpty && !searchText.isEmpty {
+                    if let errorType = viewModel.errorType {
+                                ErrorView(type: errorType)
+                    } else if filteredCities.isEmpty && !searchText.isEmpty {
                         Text("Город не найден")
                             .font(.system(size: 24, weight: .bold))
                             .foregroundColor(.primary)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .background(Color(.systemBackground))
+                    } else {
+                        List {
+                            ForEach(filteredCities) { city in
+                                Button(action: {
+                                    path.append(city)
+                                }) {
+                                    HStack {
+                                        Text(city.name)
+                                            .font(.system(size: 17, weight: .regular))
+                                            .foregroundColor(.primary)
+                                        Spacer()
+                                        Image("Chevron")
+                                            .renderingMode(.template)
+                                            .foregroundColor(.primary)
+                                    }
+                                }
+                                .listRowSeparator(.hidden)
+                                .listRowBackground(Color(.systemBackground))
+                            }
+                        }
+                        .listStyle(.plain)
+                        .background(Color(.systemBackground).ignoresSafeArea())
                     }
                 }
             }
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: City.self) { city in
-                StationSelectionView(city: city, onDismiss: {dismiss()}, path: $path, selectedCityBinding: $selectedCity)
+                StationSelectionView(
+                    city: city,
+                    onDismiss: {dismiss()},
+                    path: $path,
+                    selectedStationCode: $selectedStationCode,
+                    selectedStationName: $selectedStationName
+                )
+            }
+            .onAppear {
+                print("CitySelectionView appeared. AllCities count: \(viewModel.allCities.count), isLoading: \(viewModel.isLoading)")
+                if viewModel.allCities.isEmpty && !viewModel.isLoading {
+                    Task {
+                        print("Calling loadAllStations() from onAppear...")
+                        await viewModel.loadAllStations()
+                        print("loadAllStations() finished. AllCities count now: \(viewModel.allCities.count), Error: \(viewModel.errorType?.message ?? "None")")
+                    }
+                }
             }
         }
     }
 }
 
+// MARK: - CitySelectionView_Preview
+
 #Preview {
-    CitySelectionView(selectedCity: .constant(City(name: "Москва", stations: [])))
+    @State var selectedStationCode: String = ""
+    @State var selectedStationName: String = ""
+    CitySelectionView(selectedStationCode: $selectedStationCode, selectedStationName: $selectedStationName)
 }

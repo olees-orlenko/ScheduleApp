@@ -7,33 +7,23 @@ struct MainView: View {
     
     // MARK: - Properties
     
-    let selectedStation: Station?
-    let selectedCity: City?
-    
     @Environment(\.dismiss) private var dismiss
+    @State private var departureStationCode: String = ""
+    @State private var departureStationName: String = Constants.MainView.from
+    @State private var arrivalStationCode: String = ""
+    @State private var arrivalStationName: String = Constants.MainView.to
     @State private var citySelectionForDeparture = false
     @State private var citySelectionForArrival = false
-    @State private var departureCity: City?
-    @State private var arrivalCity: City?
     @State private var isFindButtonTapped = false
     @State private var currentStoryIndex = 0
     @State private var showFullScreenStory = false
     @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled: Bool = false
     
     private var isFindButtonEnabled: Bool {
-        departureCity != nil && arrivalCity != nil
+        !departureStationCode.isEmpty && !arrivalStationCode.isEmpty
     }
     @State private var stories: [Story] = [ .story1, .story2, .story3, .story4 ]
     @State private var fullScreenConfig = StoryConfiguration()
-    
-    // MARK: - Init
-    
-    init(selectedStation: Station?, selectedCity: City?) {
-        self.selectedStation = selectedStation
-        self.selectedCity = selectedCity
-        _departureCity = State(initialValue: selectedCity)
-        _arrivalCity = State(initialValue: nil)
-    }
     
     // MARK: - Body
     
@@ -52,15 +42,18 @@ struct MainView: View {
                 .navigationBarHidden(true)
             }
             .fullScreenCover(isPresented: $citySelectionForDeparture) {
-                CitySelectionView(selectedCity: $departureCity)
-                    .environment(\.colorScheme, isDarkModeEnabled ? .dark : .light)
+                CitySelectionView(
+                    selectedStationCode: $departureStationCode,
+                    selectedStationName: $departureStationName
+                )
+                .environment(\.colorScheme, isDarkModeEnabled ? .dark : .light)
             }
             .fullScreenCover(isPresented: $citySelectionForArrival) {
-                CitySelectionView(selectedCity: $arrivalCity)
-                    .environment(\.colorScheme, isDarkModeEnabled ? .dark : .light)
-            }
-            .navigationDestination(for: CityStationPair.self) { pair in
-                MainView(selectedStation: pair.station, selectedCity: pair.city)
+                CitySelectionView(
+                    selectedStationCode: $arrivalStationCode,
+                    selectedStationName: $arrivalStationName
+                )
+                .environment(\.colorScheme, isDarkModeEnabled ? .dark : .light)
             }
             .fullScreenCover(isPresented: $showFullScreenStory) {
                 FullScreenStoryView(
@@ -109,10 +102,10 @@ struct MainView: View {
             
             HStack(spacing: -32) {
                 VStack {
-                    cityButton(title: displayText(for: departureCity, defaultText: Constants.MainView.from)) {
+                    cityButton(title: departureStationName) {
                         citySelectionForDeparture = true
                     }
-                    cityButton(title: displayText(for: arrivalCity, defaultText: Constants.MainView.to)) {
+                    cityButton(title: arrivalStationName) {
                         citySelectionForArrival = true
                     }
                 }
@@ -130,7 +123,12 @@ struct MainView: View {
     
     private var swapButton: some View {
         Button {
-            (departureCity, arrivalCity) = (arrivalCity, departureCity)
+            let cityCode = departureStationCode
+            let cityName = departureStationName
+            departureStationCode = arrivalStationCode
+            departureStationName = arrivalStationName
+            arrivalStationCode = cityCode
+            arrivalStationName = cityName
         } label: {
             Image("Сhange")
                 .resizable()
@@ -146,8 +144,11 @@ struct MainView: View {
         Group {
             if isFindButtonEnabled {
                 NavigationLink(
-                    destination: ScheduleView()
-                        .toolbar(.hidden, for: .tabBar),
+                    destination: ScheduleView(fromStationCode: departureStationCode,
+                                              toStationCode: arrivalStationCode,
+                                              fromStationName: departureStationName,
+                                              toStationName: arrivalStationName)
+                    .toolbar(.hidden, for: .tabBar),
                     isActive: $isFindButtonTapped
                 ) {
                     EmptyView()
@@ -173,7 +174,7 @@ struct MainView: View {
         Button(action: action) {
             Text(title)
                 .font(.system(size: 17))
-                .foregroundColor(title == "Откуда" || title == "Куда" ? Color("gray") : .black)
+                .foregroundColor(title == Constants.MainView.from || title == Constants.MainView.to ? Color("gray") : .black)
                 .kerning(-0.41)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 14)
@@ -181,30 +182,12 @@ struct MainView: View {
         }
         .buttonStyle(PlainButtonStyle())
     }
-    
-    // MARK: - Helpers
-    
-    private func displayText(for city: City?, defaultText: String) -> String {
-        guard let city else { return defaultText }
-        if let stationName = city.selectedStation?.name {
-            return "\(city.name) (\(stationName))"
-        }
-        return city.name
-    }
 }
 
 // MARK: - MainView_Preview
 
 #Preview {
-    let testStation = Station(name: "Test Station")
-    let mockStations = [
-        Station(name: "Станция 1"),
-        Station(name: "Станция 2"),
-        Station(name: "Станция 3")
-    ]
-    let mockCity = City(name: "Москва", stations: mockStations)
-    
-    MainView(selectedStation: testStation, selectedCity: mockCity)
+    MainView()
         .preferredColorScheme(.light)
         .padding()
 }

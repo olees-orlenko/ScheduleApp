@@ -6,10 +6,32 @@ struct ScheduleView: View {
     
     // MARK: - Properties
     
+    let fromStationCode: String
+    let toStationCode: String
+    let fromStationName: String
+    let toStationName: String
     @Environment(\.dismiss) var dismiss
     @State private var path = NavigationPath()
-    @StateObject private var viewModel = ScheduleViewModel()
-
+    @StateObject private var viewModel: ScheduleViewModel
+    
+    // MARK: - Init
+    
+    init(fromStationCode: String,
+         toStationCode: String,
+         fromStationName: String,
+         toStationName: String) {
+        self.fromStationCode = fromStationCode
+        self.toStationCode = toStationCode
+        self.fromStationName = fromStationName
+        self.toStationName = toStationName
+        _viewModel = StateObject(wrappedValue: ScheduleViewModel(
+            fromStationCode: fromStationCode,
+            toStationCode: toStationCode,
+            fromStationName: fromStationName,
+            toStationName: toStationName
+        ))
+    }
+    
     // MARK: - Body
     
     var body: some View {
@@ -104,6 +126,11 @@ struct ScheduleView: View {
 
 // MARK: - ScheduleView_Preview
 
-#Preview{
-    ScheduleView()
+#Preview {
+    ScheduleView(
+        fromStationCode: "s2006004",
+        toStationCode: "s2000002",
+        fromStationName: "Санкт-Петербург (Московский вокзал)",
+        toStationName: "Москва (Ленинградский вокзал)"
+    )
 }

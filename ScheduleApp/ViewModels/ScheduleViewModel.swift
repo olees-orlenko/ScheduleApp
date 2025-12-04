@@ -13,15 +13,12 @@ final class ScheduleViewModel: ObservableObject {
     @Published var scheduleList: [Сarrier] = []
     @Published var isLoading: Bool = false
     @Published var errorType: ErrorType?
-    @Published var fromStationCode: String = "c4"
-    @Published var toStationCode: String = "c213"
-    @Published var fromStationName: String = "Москва (Ярославский вокзал)"
-    @Published var toStationName: String = "Санкт-Петербург (Балтийский вокзал)"
+    @Published var fromStationCode: String
+    @Published var toStationCode: String
+    @Published var fromStationName: String
+    @Published var toStationName: String
     @Published var selectedDate: Date = Date()
     private let searchService: SearchServiceProtocol
-    var routeTitle: String {
-        "\(fromStationName) → \(toStationName)"
-    }
     
     // MARK: - Date Formatters
     
@@ -44,13 +41,28 @@ final class ScheduleViewModel: ObservableObject {
         return formatter
     }()
     
+    var routeTitle: String {
+        "\(fromStationName) → \(toStationName)"
+    }
+    
     // MARK: - Init
     
-    init(searchService: SearchServiceProtocol = SearchService(
-        client: Client(serverURL: try! Servers.Server1.url(), transport: URLSessionTransport()),
-        apikey: "YOUR_API_KEY"
-    )) {
+    init(fromStationCode: String,
+         toStationCode: String,
+         fromStationName: String,
+         toStationName: String,
+         searchService: SearchServiceProtocol = SearchService(
+            client: Client(serverURL: try! Servers.Server1.url(), transport: URLSessionTransport()),
+            apikey: "YOUR_API_KEY"
+         )) {
+        self.fromStationCode = fromStationCode
+        self.toStationCode = toStationCode
+        self.fromStationName = fromStationName
+        self.toStationName = toStationName
         self.searchService = searchService
+        Task {
+            await loadSchedule()
+        }
     }
     
     // MARK: - Public Methods
