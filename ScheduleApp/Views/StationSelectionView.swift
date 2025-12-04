@@ -6,20 +6,26 @@ struct StationSelectionView: View {
     
     // MARK: - Properties
     
-    let city: City
     let onDismiss: () -> Void
     @Binding var path: NavigationPath
     @Binding var selectedStationCode: String
     @Binding var selectedStationName: String
     @State private var searchText: String = ""
     @Environment(\.dismiss) var dismiss
-    
-    private var filteredStations: [Station] {
-        if searchText.isEmpty {
-            return city.stations
-        } else {
-            return city.stations.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
-        }
+    @StateObject private var viewModel: StationSelectionViewModel
+
+    // MARK: - Init
+
+    init(city: City,
+         onDismiss: @escaping () -> Void,
+         path: Binding<NavigationPath>,
+         selectedStationCode: Binding<String>,
+         selectedStationName: Binding<String>) {
+        self.onDismiss = onDismiss
+        _path = path
+        _selectedStationCode = selectedStationCode
+        _selectedStationName = selectedStationName
+        _viewModel = StateObject(wrappedValue: StationSelectionViewModel(city: city))
     }
     
     // MARK: - Body
@@ -41,12 +47,12 @@ struct StationSelectionView: View {
                     .foregroundColor(.primary)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
-                if !searchText.isEmpty {
+                if !viewModel.searchText.isEmpty {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(Color(.gray))
                         .padding(.trailing, -7)
                         .onTapGesture {
-                            searchText = ""
+                            viewModel.searchText = ""
                         }
                 }
             }
@@ -57,7 +63,7 @@ struct StationSelectionView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 8)
             List {
-                ForEach(filteredStations) { station in
+                ForEach(viewModel.filteredStations) { station in
                     HStack {
                         Text(station.name)
                             .font(.system(size: 17, weight: .regular))
@@ -69,8 +75,9 @@ struct StationSelectionView: View {
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        selectedStationCode = station.yandexCode
-                        selectedStationName = "\(city.name), \(station.name)"
+                        let selectedStation = viewModel.selectStation(station: station)
+                        selectedStationCode = selectedStation.code
+                        selectedStationName = selectedStation.name
                         onDismiss()
                     }
                     .listRowSeparator(.hidden)

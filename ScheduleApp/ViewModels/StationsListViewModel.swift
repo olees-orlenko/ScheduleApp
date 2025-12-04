@@ -15,7 +15,6 @@ final class StationsListViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorType: ErrorType? = nil
     private let stationsListService: StationsListServiceProtocol
-    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Init
     
