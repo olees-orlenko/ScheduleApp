@@ -32,7 +32,7 @@ final class ScheduleViewModel: ObservableObject {
             }
         }
     }
-
+    
     private let searchService: SearchServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
@@ -73,15 +73,15 @@ final class ScheduleViewModel: ObservableObject {
             client: Client(serverURL: try! Servers.Server1.url(), transport: URLSessionTransport()),
             apikey: "ec1e3fff-aa6e-48b3-af0d-9428908e4a06"
          )) {
-        self.fromStationCode = fromStationCode
-        self.toStationCode = toStationCode
-        self.fromStationName = fromStationName
-        self.toStationName = toStationName
-        self.searchService = searchService
-        self.currentDepartureTimes = initialDepartureTimes
-        self.currentTransferOption = initialTransferOption
-        setupFilterAndDate()
-    }
+             self.fromStationCode = fromStationCode
+             self.toStationCode = toStationCode
+             self.fromStationName = fromStationName
+             self.toStationName = toStationName
+             self.searchService = searchService
+             self.currentDepartureTimes = initialDepartureTimes
+             self.currentTransferOption = initialTransferOption
+             setupFilterAndDate()
+         }
     
     // MARK: - Public Methods
     
@@ -89,7 +89,6 @@ final class ScheduleViewModel: ObservableObject {
         self.currentDepartureTimes = departureTimes
         self.currentTransferOption = transferOption
     }
-    
     func loadSchedule() async {
         isLoading = true
         errorType = nil
@@ -147,7 +146,7 @@ final class ScheduleViewModel: ObservableObject {
                         return nil
                     }
                     guard let transfer = apiSegment.tickets_info?.et_marker else {
-                         print("[ScheduleViewModel.loadSchedule]: missing transfers in segment: \(apiSegment)")
+                        print("[ScheduleViewModel.loadSchedule]: missing transfers in segment: \(apiSegment)")
                         return nil
                     }
                     let formattedDepartureTime = timeFormatter.string(from: departureDate)
@@ -165,7 +164,7 @@ final class ScheduleViewModel: ObservableObject {
                         carrierCode: String(carrierCode),
                         carrierLogoName: carrierAPI.logo ?? "https://yastat.net/s3/rasp/media/data/company/logo/rzd.gif",
                         carrierName: carrierAPI.title ?? "",
-                        transfer: apiSegment.tickets_info?.et_marker == true ? "" : nil,
+                        transfer: transfer ? "" : nil,
                         departureTime: formattedDepartureTime,
                         arrivalTime: formattedArrivalTime,
                         duration: formattedDuration,
@@ -189,14 +188,14 @@ final class ScheduleViewModel: ObservableObject {
                 }
             }
             else {
-                errorType = .server
+                errorType = nil
             }
             print("[ScheduleViewModel.loadSchedule] Error: \(error.localizedDescription)")
-            print("ErrorType set to: \(errorType ?? .server)")
+            print("[ScheduleViewModel.loadSchedule] ErrorType set to: \(errorType ?? nil)")
         }
         isLoading = false
     }
-
+    
     func hoursString(for count: Int) -> String {
         let lastDigit = count % 10
         let lastTwoDigits = count % 100
