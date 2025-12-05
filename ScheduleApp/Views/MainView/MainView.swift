@@ -126,7 +126,9 @@ struct MainView: View {
                     destination: ScheduleView(fromStationCode: viewModel.departureStationCode,
                                               toStationCode: viewModel.arrivalStationCode,
                                               fromStationName: viewModel.departureStationName,
-                                              toStationName: viewModel.arrivalStationName)
+                                              toStationName: viewModel.arrivalStationName,
+                                              selectedDepartureTimes: [],
+                                              selectedTransferOption: nil)
                     .toolbar(.hidden, for: .tabBar),
                     isActive: $viewModel.isFindButtonTapped
                 ) {

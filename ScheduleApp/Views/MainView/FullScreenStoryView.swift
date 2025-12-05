@@ -158,10 +158,13 @@ struct FullScreenStoryView: View {
 #Preview {
     @State var showFullScreenStory = true
     @State var currentStoryIndex = 0
-    let configuration: StoryConfiguration
-    var testStories: [Story] = [
+    @State var testStories: [Story] = [
         Story(imageName: "1", title: "Text Text Text Text Text Text Text Text Text", text: "Text Text Text Text Text Text Text Text Text", isSeen: false),
         Story(imageName: "Stories 1", title: "Text Text Text Text Text Text Text Text Text", text: "Text Text Text Text Text Text Text Text Text", isSeen: false)]
+    let configuration = StoryConfiguration(
+        storiesCount: testStories.count, storyDuration: 0.1,
+        timerTickInternal: 5.0
+    )
     FullScreenStoryView(stories: testStories, currentStoryIndex: $currentStoryIndex, showFullScreenStory: $showFullScreenStory, onStoryMarkedSeen: { index in
         if index >= 0 && index < testStories.count {
             testStories[index].isSeen = true

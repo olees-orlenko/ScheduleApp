@@ -4,9 +4,37 @@ import SwiftUI
 
 struct FilterView: View {
 
-    @StateObject private var viewModel = FilterViewModel()
+    @StateObject private var viewModel: FilterViewModel
     
     @Environment(\.dismiss) var dismiss
+    
+    // MARK: - Init
+    
+    init(fromStationCode: String,
+         toStationCode: String,
+         fromStationName: String,
+         toStationName: String,
+         onApplyFiltersAndNavigate: @escaping (
+            _ fromCode: String,
+            _ toCode: String,
+            _ fromName: String,
+            _ toName: String,
+            _ departureTimes: [Time],
+            _ transferOption: Transfer?
+         ) -> Void,
+         initialDepartureTimes: Set<Time>,
+         initialTransferOption: Transfer?
+    ) {
+        _viewModel = StateObject(wrappedValue: FilterViewModel(
+            fromStationCode: fromStationCode,
+            toStationCode: toStationCode,
+            fromStationName: fromStationName,
+            toStationName: toStationName,
+            onApplyFiltersAndNavigate: onApplyFiltersAndNavigate,
+            initialDepartureTimes: initialDepartureTimes,
+            initialTransferOption: initialTransferOption
+        ))
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -79,8 +107,4 @@ struct FilterView: View {
         .navigationBarHidden(true)
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
-}
-
-#Preview {
-    FilterView()
 }

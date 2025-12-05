@@ -10,16 +10,18 @@ struct ScheduleView: View {
     let toStationCode: String
     let fromStationName: String
     let toStationName: String
-    @Environment(\.dismiss) var dismiss
     @State private var path = NavigationPath()
     @StateObject private var viewModel: ScheduleViewModel
+    @Environment(\.dismiss) var dismiss
     
     // MARK: - Init
     
     init(fromStationCode: String,
          toStationCode: String,
          fromStationName: String,
-         toStationName: String) {
+         toStationName: String,
+         selectedDepartureTimes: [Time],
+         selectedTransferOption: Transfer?) {
         self.fromStationCode = fromStationCode
         self.toStationCode = toStationCode
         self.fromStationName = fromStationName
@@ -28,7 +30,9 @@ struct ScheduleView: View {
             fromStationCode: fromStationCode,
             toStationCode: toStationCode,
             fromStationName: fromStationName,
-            toStationName: toStationName
+            toStationName: toStationName,
+            initialDepartureTimes: Set(selectedDepartureTimes),
+            initialTransferOption: selectedTransferOption
         ))
     }
     
@@ -110,16 +114,21 @@ struct ScheduleView: View {
     
     private var navigationLinkButton: some View {
         NavigationLink {
-            FilterView()
+            FilterView(
+                fromStationCode: fromStationCode,
+                toStationCode: toStationCode,
+                fromStationName: fromStationName,
+                toStationName: toStationName,
+                onApplyFiltersAndNavigate: { fromCode, toCode, fromName, toName, newDepartureTimes, newTransferOption in
+                    viewModel.updateFilters(
+                        departureTimes: Set(newDepartureTimes),
+                        transferOption: newTransferOption
+                    )
+                },
+                initialDepartureTimes: viewModel.currentDepartureTimes,
+                initialTransferOption: viewModel.currentTransferOption)
         } label: {
-            ConfirmTimeButton {
-                path.append("GoToFilterView")
-            }
-            .navigationDestination(for: String.self) { route in
-                if route == "GoToFilterView" {
-                    FilterView()
-                }
-            }
+            ConfirmTimeButton(action: nil)
         }
     }
 }
@@ -131,6 +140,8 @@ struct ScheduleView: View {
         fromStationCode: "s2006004",
         toStationCode: "s2000002",
         fromStationName: "Санкт-Петербург (Московский вокзал)",
-        toStationName: "Москва (Ленинградский вокзал)"
+        toStationName: "Москва (Ленинградский вокзал)",
+        selectedDepartureTimes: [],
+        selectedTransferOption: nil
     )
 }

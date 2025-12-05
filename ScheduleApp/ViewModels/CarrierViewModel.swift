@@ -21,7 +21,7 @@ final class CarrierViewModel: ObservableObject {
     
     // MARK: - Init
     
-    init(carrierCode: String, carrierService: CarrierServiceProtocol = CarrierService(client: Client(serverURL: try! Servers.Server1.url(), transport: URLSessionTransport()), apikey: "YOUR_API_KEY")) {
+    init(carrierCode: String, carrierService: CarrierServiceProtocol = CarrierService(client: Client(serverURL: try! Servers.Server1.url(), transport: URLSessionTransport()), apikey: "ec1e3fff-aa6e-48b3-af0d-9428908e4a06")) {
         self.carrierCode = carrierCode
         self.carrierService = carrierService
     }

@@ -6,29 +6,36 @@ struct ConfirmTimeButton: View {
     
     // MARK: - Properties
     
-    let action: () -> Void
+    let action: (() -> Void)?
     
     // MARK: - Body
     
     var body: some View {
-        button
+        if let action = action {
+            Button(action: action) {
+                button
+            }
             .padding(.horizontal)
             .padding(.bottom, 24)
+        } else {
+            button
+                .padding(.horizontal)
+                .padding(.bottom, 24)
+        }
     }
     
     // MARK: - Views
     
     private var button: some View {
-        Button(action: action) {
-            Text(Constants.ConfirmTimeButton.timeButton)
-                .font(.system(size: 17, weight: .bold))
-                .foregroundColor(.white)
-                .padding(.vertical, 20)
-                .frame(maxWidth: .infinity)
-                .background(Color("blue"))
-                .cornerRadius(16)
-        }
+        Text(Constants.ConfirmTimeButton.timeButton)
+            .font(.system(size: 17, weight: .bold))
+            .foregroundColor(.white)
+            .padding(.vertical, 20)
+            .frame(maxWidth: .infinity)
+            .background(Color("blue"))
+            .cornerRadius(16)
     }
+    
 }
 
 // MARK: - ConfirmTimeButton_Preview

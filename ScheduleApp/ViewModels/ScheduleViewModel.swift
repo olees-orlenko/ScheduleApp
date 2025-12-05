@@ -18,7 +18,23 @@ final class ScheduleViewModel: ObservableObject {
     @Published var fromStationName: String
     @Published var toStationName: String
     @Published var selectedDate: Date = Date()
+    @Published var currentDepartureTimes: Set<Time> = [] {
+        didSet {
+            if currentDepartureTimes != oldValue {
+                Task { await loadSchedule() }
+            }
+        }
+    }
+    @Published var currentTransferOption: Transfer? = nil {
+        didSet {
+            if currentTransferOption != oldValue {
+                Task { await loadSchedule() }
+            }
+        }
+    }
+
     private let searchService: SearchServiceProtocol
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Date Formatters
     
@@ -51,21 +67,28 @@ final class ScheduleViewModel: ObservableObject {
          toStationCode: String,
          fromStationName: String,
          toStationName: String,
+         initialDepartureTimes: Set<Time> = [],
+         initialTransferOption: Transfer? = nil,
          searchService: SearchServiceProtocol = SearchService(
             client: Client(serverURL: try! Servers.Server1.url(), transport: URLSessionTransport()),
-            apikey: "YOUR_API_KEY"
+            apikey: "ec1e3fff-aa6e-48b3-af0d-9428908e4a06"
          )) {
         self.fromStationCode = fromStationCode
         self.toStationCode = toStationCode
         self.fromStationName = fromStationName
         self.toStationName = toStationName
         self.searchService = searchService
-        Task {
-            await loadSchedule()
-        }
+        self.currentDepartureTimes = initialDepartureTimes
+        self.currentTransferOption = initialTransferOption
+        setupFilterAndDate()
     }
     
     // MARK: - Public Methods
+    
+    func updateFilters(departureTimes: Set<Time>, transferOption: Transfer?) {
+        self.currentDepartureTimes = departureTimes
+        self.currentTransferOption = transferOption
+    }
     
     func loadSchedule() async {
         isLoading = true
@@ -81,7 +104,24 @@ final class ScheduleViewModel: ObservableObject {
             print("API Response received: \(apiResponse)")
             if let segments = apiResponse.segments {
                 print("Number of segments in API response: \(segments.count)")
-                self.scheduleList = segments.compactMap { (apiSegment) -> Сarrier? in
+                let filteredSegments = segments.filter { segment in
+                    if !currentDepartureTimes.isEmpty, let departureDate = segment.departure {
+                        let departureHour = Calendar.current.component(.hour, from: departureDate)
+                        let isTimeMatch = currentDepartureTimes.contains (where: {timeFilter in
+                            timeFilter.hourRange().contains(departureHour)
+                        })
+                        guard isTimeMatch else { return false }
+                    }
+                    if let transferOption = currentTransferOption {
+                        guard let transfers = segment.tickets_info?.et_marker else {
+                            return false
+                        }
+                        if transferOption == .yes && !transfers { return false }
+                        if transferOption == .no && transfers { return false }
+                    }
+                    return true
+                }
+                self.scheduleList = filteredSegments.compactMap { (apiSegment) -> Сarrier? in
                     guard let thread = apiSegment.thread else {
                         print("[ScheduleViewModel.loadSchedule]: missing thread: \(apiSegment)")
                         return nil
@@ -106,6 +146,10 @@ final class ScheduleViewModel: ObservableObject {
                         print("[ScheduleViewModel.loadSchedule]: missing durationSeconds: \(apiSegment)")
                         return nil
                     }
+                    guard let transfer = apiSegment.tickets_info?.et_marker else {
+                         print("[ScheduleViewModel.loadSchedule]: missing transfers in segment: \(apiSegment)")
+                        return nil
+                    }
                     let formattedDepartureTime = timeFormatter.string(from: departureDate)
                     let formattedArrivalTime = timeFormatter.string(from: arrivalDate)
                     let durationHours = Int(duration / 3600)
@@ -121,7 +165,7 @@ final class ScheduleViewModel: ObservableObject {
                         carrierCode: String(carrierCode),
                         carrierLogoName: carrierAPI.logo ?? "https://yastat.net/s3/rasp/media/data/company/logo/rzd.gif",
                         carrierName: carrierAPI.title ?? "",
-                        transfer: apiSegment.tickets_info?.et_marker == true ? "пересадки" : nil,
+                        transfer: apiSegment.tickets_info?.et_marker == true ? "" : nil,
                         departureTime: formattedDepartureTime,
                         arrivalTime: formattedArrivalTime,
                         duration: formattedDuration,
@@ -167,5 +211,18 @@ final class ScheduleViewModel: ObservableObject {
         default:
             return "часов"
         }
+    }
+    
+    // MARK: - Private Methods
+    
+    private func setupFilterAndDate() {
+        Publishers.CombineLatest3($selectedDate, $currentDepartureTimes, $currentTransferOption)
+            .debounce(for: .seconds(0.3), scheduler: RunLoop.main)
+            .sink { [weak self] (date, times, transfer) in
+                guard let self = self else { return }
+                print("ScheduleViewModel: Filters or date changed (Date: \(self.displayDateFormatter.string(from: date)), Times: \(times.count), Transfer: \(transfer?.rawValue ?? "nil")), refetching schedule...")
+                Task { await self.loadSchedule() }
+            }
+            .store(in: &cancellables)
     }
 }
