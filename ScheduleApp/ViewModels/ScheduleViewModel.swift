@@ -10,6 +10,7 @@ final class ScheduleViewModel: ObservableObject {
     
     // MARK: - Properties
     
+    @Published var showFilterCircle: Bool = false
     @Published var scheduleList: [Сarrier] = []
     @Published var isLoading: Bool = false
     @Published var errorType: ErrorType?
@@ -81,6 +82,7 @@ final class ScheduleViewModel: ObservableObject {
              self.currentDepartureTimes = initialDepartureTimes
              self.currentTransferOption = initialTransferOption
              setupFilterAndDate()
+             updateFilterCircleVisibility()
          }
     
     // MARK: - Public Methods
@@ -88,7 +90,13 @@ final class ScheduleViewModel: ObservableObject {
     func updateFilters(departureTimes: Set<Time>, transferOption: Transfer?) {
         self.currentDepartureTimes = departureTimes
         self.currentTransferOption = transferOption
+        updateFilterCircleVisibility()
     }
+    
+    private func updateFilterCircleVisibility() {
+        showFilterCircle = !currentDepartureTimes.isEmpty || currentTransferOption != nil
+    }
+    
     func loadSchedule() async {
         isLoading = true
         errorType = nil

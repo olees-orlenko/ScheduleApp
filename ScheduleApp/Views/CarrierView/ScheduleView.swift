@@ -128,7 +128,7 @@ struct ScheduleView: View {
                 initialDepartureTimes: viewModel.currentDepartureTimes,
                 initialTransferOption: viewModel.currentTransferOption)
         } label: {
-            ConfirmTimeButton(action: nil)
+            ConfirmTimeButton(action: nil, showCircle: viewModel.showFilterCircle)
         }
     }
 }
