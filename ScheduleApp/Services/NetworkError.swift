@@ -3,6 +3,7 @@ import Foundation
 enum NetworkError: Error, LocalizedError {
     case noInternet
     case serverError(statusCode: Int)
+    case undocumented(statusCode: Int)
     
     var errorDescription: String? {
         switch self {
@@ -10,6 +11,8 @@ enum NetworkError: Error, LocalizedError {
             return "Нет подключения к интернету."
         case .serverError(let statusCode):
             return "Ошибка сервера: \(statusCode)."
+        case .undocumented(let statusCode):
+            return "Неизвестная ошибка: \(statusCode)"
         }
     }
 }

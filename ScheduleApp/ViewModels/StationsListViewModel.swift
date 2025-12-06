@@ -45,6 +45,8 @@ final class StationsListViewModel: ObservableObject {
                     errorType = .noInternet
                 case .serverError(_):
                     errorType = .server
+                case .undocumented(_):
+                    errorType = .server
                 }
             }
             else {
