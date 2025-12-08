@@ -64,6 +64,7 @@ final class StationsListViewModel: ObservableObject {
         var cities: [City] = []
         guard let countries = apiResponse.countries else { return [] }
         for country in countries {
+            guard country.title == "Россия" else { continue }
             guard let regions = country.regions else { continue }
             for region in regions {
                 guard let settlements = region.settlements else { continue }
@@ -76,7 +77,8 @@ final class StationsListViewModel: ObservableObject {
                     var newStations: [Station] = []
                     if let stations = settlement.stations {
                         for station in stations {
-                            if let stationTitle = station.title,
+                            if station.transport_type == "train",
+                               let stationTitle = station.title,
                                let yandexCode = station.codes?.yandex_code {
                                 newStations.append(Station(name: stationTitle, yandexCode: yandexCode))
                             } else {

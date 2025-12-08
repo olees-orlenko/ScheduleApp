@@ -128,7 +128,7 @@ final class ScheduleViewModel: ObservableObject {
                     guard isTimeMatch else { return false }
                 }
                 if let transferOption = currentTransferOption {
-                    let transfers = segment.tickets_info?.et_marker ?? false
+                    let transfers = false
                     print("  Segment: \(segment.thread?.title ?? "Unknown") Has Transfers: \(transfers). Transfer Filter Option: \(transferOption.rawValue)")
                     
                     if transferOption == .yes && !transfers { return false }
@@ -167,7 +167,7 @@ final class ScheduleViewModel: ObservableObject {
                     print("[ScheduleViewModel.loadSchedule]: missing durationSeconds: \(apiSegment)")
                     return nil
                 }
-                let transfersAvailable = apiSegment.tickets_info?.et_marker ?? false
+                let transfersAvailable: Bool = false
                 let formattedDepartureTime = timeFormatter.string(from: departureDate)
                 let formattedArrivalTime = timeFormatter.string(from: arrivalDate)
                 let durationHours = Int(duration / 3600)
