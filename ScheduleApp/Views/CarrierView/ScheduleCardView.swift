@@ -7,12 +7,15 @@ struct ScheduleCardView: View {
     // MARK: - Properties
     
     let schedule: Сarrier
-
+    
     // MARK: - Body
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            carrierInfoSection
+            NavigationLink(destination: CarrierView(carrierCode: schedule.carrierCode)) {
+                carrierInfoSection
+            }
+            .buttonStyle(PlainButtonStyle())
             timeSection
         }
         .padding(14)
@@ -21,13 +24,13 @@ struct ScheduleCardView: View {
         .padding(.horizontal)
         .padding(.bottom, 8)
     }
-
+    
     // MARK: - Views
-
+    
     private var carrierInfoSection: some View {
         HStack {
             CarrierLogoView(
-                logoName: schedule.carrierLogoName,
+                logoURLString: schedule.carrierLogoName ?? "",
                 carrierName: schedule.carrierName,
                 transfer: schedule.transfer
             )

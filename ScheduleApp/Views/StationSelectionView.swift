@@ -1,21 +1,34 @@
 import SwiftUI
 
+// MARK: - StationSelectionView
+
 struct StationSelectionView: View {
-    let city: City
+    
+    // MARK: - Properties
+    
     let onDismiss: () -> Void
     @Binding var path: NavigationPath
-    @Binding var selectedCityBinding: City?
-    
+    @Binding var selectedStationCode: String
+    @Binding var selectedStationName: String
     @State private var searchText: String = ""
     @Environment(\.dismiss) var dismiss
-    
-    private var filteredStations: [Station] {
-        if searchText.isEmpty {
-            return city.stations
-        } else {
-            return city.stations.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
-        }
+    @StateObject private var viewModel: StationSelectionViewModel
+
+    // MARK: - Init
+
+    init(city: City,
+         onDismiss: @escaping () -> Void,
+         path: Binding<NavigationPath>,
+         selectedStationCode: Binding<String>,
+         selectedStationName: Binding<String>) {
+        self.onDismiss = onDismiss
+        _path = path
+        _selectedStationCode = selectedStationCode
+        _selectedStationName = selectedStationName
+        _viewModel = StateObject(wrappedValue: StationSelectionViewModel(city: city))
     }
+    
+    // MARK: - Body
     
     var body: some View {
         VStack(spacing: 0) {
@@ -34,12 +47,12 @@ struct StationSelectionView: View {
                     .foregroundColor(.primary)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
-                if !searchText.isEmpty {
+                if !viewModel.searchText.isEmpty {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(Color(.gray))
                         .padding(.trailing, -7)
                         .onTapGesture {
-                            searchText = ""
+                            viewModel.searchText = ""
                         }
                 }
             }
@@ -50,22 +63,21 @@ struct StationSelectionView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 8)
             List {
-                ForEach(filteredStations) { station in
+                ForEach(viewModel.filteredStations) { station in
                     HStack {
                         Text(station.name)
                             .font(.system(size: 17, weight: .regular))
                             .foregroundColor(.primary)
                         Spacer()
-                        
                         Image("Chevron")
                             .renderingMode(.template)
                             .foregroundColor(.primary)
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        var resultCity = city
-                        resultCity.selectedStation = station
-                        selectedCityBinding = resultCity
+                        let selectedStation = viewModel.selectStation(station: station)
+                        selectedStationCode = selectedStation.code
+                        selectedStationName = selectedStation.name
                         onDismiss()
                     }
                     .listRowSeparator(.hidden)

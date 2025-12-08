@@ -49,6 +49,7 @@ struct ErrorView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(UIColor.systemBackground))
+        .toolbar(.hidden, for: .navigationBar)
     }
 }
 
