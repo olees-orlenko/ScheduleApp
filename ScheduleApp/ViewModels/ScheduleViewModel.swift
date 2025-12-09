@@ -123,7 +123,7 @@ final class ScheduleViewModel: ObservableObject {
                 if !currentDepartureTimes.isEmpty, let departureDate = segment.departure {
                     let departureHour = Calendar.current.component(.hour, from: departureDate)
                     let isTimeMatch = currentDepartureTimes.contains (where: {timeFilter in
-                        timeFilter.hourRange().contains(departureHour)
+                        timeFilter.hourRange.contains(departureHour)
                     })
                     guard isTimeMatch else { return false }
                 }

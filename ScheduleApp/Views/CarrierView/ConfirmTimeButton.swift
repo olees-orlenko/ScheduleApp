@@ -34,15 +34,14 @@ struct ConfirmTimeButton: View {
             .padding(.vertical, 20)
             .frame(maxWidth: .infinity)
             .overlay(alignment: .trailing) {
-                if showCircle {
-                    Circle()
-                        .fill(Color.red)
-                        .frame(width: 8, height: 8)
-                        .offset(x: -94.5, y: 0)
-                }
+                Circle()
+                    .fill(Color.red)
+                    .frame(width: 8, height: 8)
+                    .offset(x: -94.5, y: 0)
+                    .opacity(showCircle ? 1 : 0)
             }
             .background(Color("blue"))
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
 

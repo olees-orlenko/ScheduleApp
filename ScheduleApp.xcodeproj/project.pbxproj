@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		FC02FF632EC3DB0400C94F4F /* UIColor+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC02FF602EC3DB0200C94F4F /* UIColor+Theme.swift */; };
+		FC75825E2EE79D9B0005FBFC /* InMemoryLogging in Frameworks */ = {isa = PBXBuildFile; productRef = FC75825D2EE79D9B0005FBFC /* InMemoryLogging */; };
+		FC7582602EE79D9B0005FBFC /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = FC75825F2EE79D9B0005FBFC /* Logging */; };
 		FC7AACE42EA3253600571D64 /* OpenAPIRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = FC7AACE32EA3253600571D64 /* OpenAPIRuntime */; };
 		FC7AACE72EA3255100571D64 /* OpenAPIURLSession in Frameworks */ = {isa = PBXBuildFile; productRef = FC7AACE62EA3255100571D64 /* OpenAPIURLSession */; };
 /* End PBXBuildFile section */
@@ -31,6 +33,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				FC7AACE42EA3253600571D64 /* OpenAPIRuntime in Frameworks */,
+				FC75825E2EE79D9B0005FBFC /* InMemoryLogging in Frameworks */,
+				FC7582602EE79D9B0005FBFC /* Logging in Frameworks */,
 				FC7AACE72EA3255100571D64 /* OpenAPIURLSession in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,6 +98,8 @@
 			packageProductDependencies = (
 				FC7AACE32EA3253600571D64 /* OpenAPIRuntime */,
 				FC7AACE62EA3255100571D64 /* OpenAPIURLSession */,
+				FC75825D2EE79D9B0005FBFC /* InMemoryLogging */,
+				FC75825F2EE79D9B0005FBFC /* Logging */,
 			);
 			productName = ScheduleApp;
 			productReference = FC7AAC5D2EA31E2800571D64 /* ScheduleApp.app */;
@@ -127,6 +133,7 @@
 				FC7AACE22EA3253600571D64 /* XCRemoteSwiftPackageReference "swift-openapi-runtime" */,
 				FC7AACE52EA3255100571D64 /* XCRemoteSwiftPackageReference "swift-openapi-urlsession" */,
 				FC7AACE82EA3262900571D64 /* XCRemoteSwiftPackageReference "swift-openapi-generator" */,
+				FC75825C2EE79D9B0005FBFC /* XCRemoteSwiftPackageReference "swift-log" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FC7AAC5E2EA31E2800571D64 /* Products */;
@@ -380,6 +387,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		FC75825C2EE79D9B0005FBFC /* XCRemoteSwiftPackageReference "swift-log" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-log.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.7.1;
+			};
+		};
 		FC7AACE22EA3253600571D64 /* XCRemoteSwiftPackageReference "swift-openapi-runtime" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-openapi-runtime";
@@ -407,6 +422,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		FC75825D2EE79D9B0005FBFC /* InMemoryLogging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FC75825C2EE79D9B0005FBFC /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = InMemoryLogging;
+		};
+		FC75825F2EE79D9B0005FBFC /* Logging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FC75825C2EE79D9B0005FBFC /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = Logging;
+		};
 		FC7AACE32EA3253600571D64 /* OpenAPIRuntime */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = FC7AACE22EA3253600571D64 /* XCRemoteSwiftPackageReference "swift-openapi-runtime" */;

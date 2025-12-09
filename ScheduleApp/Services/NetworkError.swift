@@ -1,4 +1,5 @@
 import Foundation
+import Logging
 
 enum NetworkError: Error, LocalizedError {
     case noInternet
@@ -8,24 +9,33 @@ enum NetworkError: Error, LocalizedError {
     var errorDescription: String? {
         switch self {
         case .noInternet:
-            return "Нет подключения к интернету."
+            "Нет подключения к интернету."
         case .serverError(let statusCode):
-            return "Ошибка сервера: \(statusCode)."
+            "Ошибка сервера: \(statusCode)."
         case .undocumented(let statusCode):
-            return "Неизвестная ошибка: \(statusCode)"
+            "Неизвестная ошибка: \(statusCode)"
         }
     }
 }
 
 actor NetworkClient {
     private let session: URLSession
+    private static let logger = Logger(label: "com.yourapp.NetworkClient")
     
     init(session: URLSession = .shared) {
         self.session = session
     }
     
     func checkApiAvailability() async throws {
-        try await Task.sleep(for: .seconds(1))
-        print("API is available.")
+        do {
+            try await Task.sleep(for: .seconds(1))
+            NetworkClient.logger.info("API is available.")
+        } catch let cancellationError as CancellationError {
+            NetworkClient.logger.warning("API check was cancelled. Error: \(cancellationError)")
+            throw cancellationError
+        } catch let error {
+            NetworkClient.logger.error("API is not available: \(error)")
+            throw error
+        }
     }
 }

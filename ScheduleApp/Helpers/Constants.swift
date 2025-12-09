@@ -6,13 +6,13 @@ public struct Constants {
     
     // MARK: - ConfirmTimeButton Strings
     
-    public struct ConfirmTimeButton {
+    struct ConfirmTimeButton {
         public static let timeButton = "Уточнить время"
     }
     
     // MARK: - CarrierView Strings
     
-    public struct CarrierView {
+    struct CarrierView {
         public static let carrierTitle = "Информация о перевозчике"
         public static let carrierEmail = "E-mail"
         public static let carrierPhone = "Телефон"
@@ -20,13 +20,13 @@ public struct Constants {
     
     // MARK: - ScheduleView Strings
     
-    public struct ScheduleView {
+    struct ScheduleView {
         public static let emptyScheduleText = "Вариантов нет"
     }
     
     // MARK: - FilterView Strings
     
-    public struct FilterView {
+    struct FilterView {
         public static let departureTime = "Время отправления"
         public static let showTransfers = "Показывать варианты с пересадками"
         public static let applyButton = "Применить"
@@ -34,7 +34,7 @@ public struct Constants {
     
     // MARK: - MainView Strings
     
-    public struct MainView {
+    struct MainView {
         public static let from = "Откуда"
         public static let to = "Куда"
         public static let findButton = "Найти"
@@ -42,7 +42,7 @@ public struct Constants {
     
     // MARK: - SettingsView Strings
     
-    public struct SettingsView {
+    struct SettingsView {
         public static let appVersion = "Версия 1.0 (beta)"
         public static let appUseApiText = "Приложение использует API «Яндекс.Расписания»"
         public static let darkTheme = "Тёмная тема"

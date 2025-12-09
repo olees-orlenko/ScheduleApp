@@ -6,7 +6,7 @@ struct CitySelectionView: View {
     
     // MARK: - Properties
     
-    @StateObject var viewModel = StationsListViewModel()
+    @StateObject private var viewModel = StationsListViewModel()
     @State private var path = NavigationPath()
     @State private var searchText: String = ""
     @Binding var selectedStationCode: String
@@ -76,7 +76,7 @@ struct CitySelectionView: View {
                                             .font(.system(size: 17, weight: .regular))
                                             .foregroundColor(.primary)
                                         Spacer()
-                                        Image("Chevron")
+                                        Image(.chevron)
                                             .renderingMode(.template)
                                             .foregroundColor(.primary)
                                     }
